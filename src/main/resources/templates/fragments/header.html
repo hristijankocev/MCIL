@@ -15,9 +15,12 @@
                 <li class="nav-item">
                     <a href="/" class="nav-link">Home</a>
                 </li>
+                <li class="nav-item">
+                    <a th:href="@{/person/add}" class="nav-link">Add person</a>
+                </li>
             </ul>
             <a href="/">
-                <img th:src="@{images/company_logo.png}" alt="brand-logo" class="nav-brand-logo"
+                <img th:src="@{/images/company_logo.png}" alt="brand-logo" class="nav-brand-logo"
                      ondragstart="return false;">
             </a>
             <ul class="navbar-nav mb-2 mb-lg-0">

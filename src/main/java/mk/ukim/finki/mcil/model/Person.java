@@ -42,4 +42,107 @@ public class Person {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "last_modified_at")
     private Date modifyDate;
+
+    public Person() {
+    }
+
+    public Person(String firstName, String lastName, byte[] profilePicture, List<Workplace> worksAtLinks,
+                  List<WebPage> crawledLinks, List<WebPage> validLinks, String facebookAbout, String linkedInData) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.profilePicture = profilePicture;
+        this.worksAtLinks = worksAtLinks;
+        this.crawledLinks = crawledLinks;
+        this.validLinks = validLinks;
+        this.facebookAbout = facebookAbout;
+        this.linkedInData = linkedInData;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public byte[] getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(byte[] profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
+    public List<Workplace> getWorksAtLinks() {
+        return worksAtLinks;
+    }
+
+    public void setWorksAtLinks(List<Workplace> worksAtLinks) {
+        this.worksAtLinks = worksAtLinks;
+    }
+
+    public List<WebPage> getCrawledLinks() {
+        return crawledLinks;
+    }
+
+    public void setCrawledLinks(List<WebPage> crawledLinks) {
+        this.crawledLinks = crawledLinks;
+    }
+
+    public List<WebPage> getValidLinks() {
+        return validLinks;
+    }
+
+    public void setValidLinks(List<WebPage> validLinks) {
+        this.validLinks = validLinks;
+    }
+
+    public String getFacebookAbout() {
+        return facebookAbout;
+    }
+
+    public void setFacebookAbout(String facebookAbout) {
+        this.facebookAbout = facebookAbout;
+    }
+
+    public String getLinkedInData() {
+        return linkedInData;
+    }
+
+    public void setLinkedInData(String linkedInData) {
+        this.linkedInData = linkedInData;
+    }
+
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public Date getModifyDate() {
+        return modifyDate;
+    }
+
+    public void setModifyDate(Date modifyDate) {
+        this.modifyDate = modifyDate;
+    }
 }

@@ -36,5 +36,14 @@ body {
     border-radius: 24px;
 }
 
+#section-add-person > div {
+    background: #1A1A1A;
+    border-radius: 24px;
+}
+
 @media (max-width: 978px) {
+}
+
+textarea {
+    height: 24px;
 }
