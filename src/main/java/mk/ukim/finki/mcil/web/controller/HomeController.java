@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping(path = "/")
@@ -20,6 +19,8 @@ public class HomeController {
     @GetMapping
     public String getIndexPage(@RequestParam(required = false) String searchQuery,
                                Model model) {
+
+        // fbTest();
 
         // Check whether the query is empty or not
         if (searchQuery != null && !searchQuery.isEmpty()) {
@@ -47,7 +48,7 @@ public class HomeController {
             // Select and traverse the elements that contain the links and extract the info
             for (Element result : doc.select("div.yuRUbf > a")) {
                 final String title = result.text();
-                final String url = result.attr("href").replace("/url?q=", "");
+                final String url = result.attr("href");
 
                 // Store the result in a dictionary
                 dict.put(title, url);
