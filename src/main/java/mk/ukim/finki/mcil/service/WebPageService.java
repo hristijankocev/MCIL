@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface WebPageService {
-    Optional<WebPage> save(String id, LinkStatus status, Person person, String content);
+    WebPage save(String id, LinkStatus status, Person person, String content);
+
+    WebPage save(String id, LinkStatus status, String content);
 
     Optional<WebPage> findById(String id);
 

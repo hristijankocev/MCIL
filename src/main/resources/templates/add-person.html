@@ -20,14 +20,17 @@
         <div class="py-5 container">
             <h3 class="fw-lighter">Add a person</h3>
             <hr/>
+            <p class="text-center text-danger" th:if="${error} != null" th:text="${error}"></p>
             <div class="pt-4 px-5" style="border-radius: 24px; border: 1px solid black;">
-                <form th:action="@{/person/add}" th:method="post" enctype="multipart/form-data">
-                    <div class="row">
+                <form th:action="@{/person/add}" th:method="post">
+                    <hr/>
+                    <p class="fst-italic fw-lighter text-center" style="line-height: 0.05em">Required</p>
+                    <div class="row pt-1">
                         <div class="col-md-3 col-sm-12">
                             <label for="first-name">First name: </label>
                         </div>
                         <div class="col-md-9 col-sm-12">
-                            <input type="text" name="firstName" class="form-control" id="first-name">
+                            <input required type="text" name="firstName" class="form-control" id="first-name">
                         </div>
                     </div>
                     <div class="row pt-3">
@@ -35,32 +38,21 @@
                             <label for="last-name">Last name: </label>
                         </div>
                         <div class="col-md-9 col-sm-12">
-                            <input type="text" name="lastName" class="form-control" id="last-name">
+                            <input required type="text" name="lastName" class="form-control" id="last-name">
                         </div>
                     </div>
-                    <div class="row pt-3">
+                    <hr/>
+                    <p class="fst-italic fw-lighter text-center" style="line-height: 0.05em">Optional</p>
+                    <div class="row pt-1">
                         <div class="col-md-3 col-sm-12">
-                            <label for="facebook-about">Facebook about: </label>
+                            <label for="works-at">Works at: </label>
                         </div>
                         <div class="col-md-9 col-sm-12">
-                            <input type="text" name="facebookAbout" class="form-control" id="facebook-about">
-                        </div>
-                    </div>
-                    <div class="row pt-3">
-                        <div class="col-md-3 col-sm-12">
-                            <label for="linkedin-data">Linkedin data: </label>
-                        </div>
-                        <div class="col-md-9 col-sm-12">
-                            <input type="text" name="linkedinData" class="form-control" id="linkedin-data">
-                        </div>
-                    </div>
-                    <div class="row pt-3">
-                        <div class="col-md-3 col-sm-12">
-                            <label for="works-at">Works at (links): </label>
-                        </div>
-                        <div class="col-md-9 col-sm-12">
-                            <textarea name="worksAt" class="form-control" id="works-at"
-                                      placeholder="separate links with semi-colons"></textarea>
+                            <datalist th:if="!${workplaces.isEmpty()}" id="existing-workplaces">
+                                <option th:each="workplace : ${workplaces}" th:value="${workplace.getName()}"></option>
+                            </datalist>
+                            <input name="worksAt" class="form-control" id="works-at" list="existing-workplaces"
+                                   placeholder="separate items with semi-colons">
                         </div>
                     </div>
                     <div class="row pt-3">
@@ -69,7 +61,7 @@
                         </div>
                         <div class="col-md-9 col-sm-12">
                             <textarea name="validLinks" class="form-control" id="valid-links"
-                                      placeholder="separate links with semi-colons"></textarea>
+                                      placeholder="separate items with semi-colons"></textarea>
                         </div>
                     </div>
                     <div class="row pt-3">
@@ -78,15 +70,13 @@
                         </div>
                         <div class="col-md-9 col-sm-12">
                             <textarea name="crawledLinks" class="form-control" id="crawled-links"
-                                      placeholder="separate links with semi-colons"></textarea>
+                                      placeholder="separate items with semi-colons"></textarea>
                         </div>
                     </div>
+                    <hr/>
                     <div class="row pt-3">
                         <div class="col-12">
-                            <label for="profile-picture" class="btn btn-dark w-100" id="pfp-label">
-                                Upload profile picture
-                            </label>
-                            <input type="file" id="profile-picture" style="display: none" name="profilePicture">
+                            <input type="submit" value="Add" class="btn btn-dark w-100">
                         </div>
                     </div>
                 </form>

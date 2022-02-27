@@ -20,12 +20,12 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Optional<Person> save(String firstName, String lastName, byte[] profilePicture,
-                                 List<Workplace> worksAtLinks, List<WebPage> crawledLinks,
-                                 List<WebPage> validLinks, String facebookAbout, String linkedInData) {
-        return Optional.of(this.personRepository
+    public Person save(String firstName, String lastName, byte[] profilePicture,
+                       List<Workplace> worksAtLinks, List<WebPage> crawledLinks,
+                       List<WebPage> validLinks, String facebookAbout, String linkedInData) {
+        return this.personRepository
                 .save(new Person(firstName, lastName, profilePicture, worksAtLinks, crawledLinks, validLinks,
-                        facebookAbout, linkedInData)));
+                        facebookAbout, linkedInData));
     }
 
     @Override
@@ -43,5 +43,10 @@ public class PersonServiceImpl implements PersonService {
     public Optional<Person> findById(Long id) {
         Person person = this.personRepository.findById(id).orElseThrow(() -> new PersonNotFoundException(id));
         return Optional.of(person);
+    }
+
+    @Override
+    public Person save(Person person) {
+        return this.personRepository.save(person);
     }
 }

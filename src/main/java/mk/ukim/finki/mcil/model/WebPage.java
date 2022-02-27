@@ -23,6 +23,12 @@ public class WebPage {
     public WebPage() {
     }
 
+    public WebPage(String id, LinkStatus status, String content) {
+        this.id = id;
+        this.status = status;
+        this.content = content;
+    }
+
     public WebPage(String id, LinkStatus status, Person person, String content) {
         this.id = id;
         this.status = status;

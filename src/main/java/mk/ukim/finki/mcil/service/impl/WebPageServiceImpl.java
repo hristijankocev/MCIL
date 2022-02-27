@@ -21,8 +21,13 @@ public class WebPageServiceImpl implements WebPageService {
     }
 
     @Override
-    public Optional<WebPage> save(String id, LinkStatus status, Person person, String content) {
-        return Optional.of(this.webPageRepository.save(new WebPage(id, status, person, content)));
+    public WebPage save(String id, LinkStatus status, Person person, String content) {
+        return this.webPageRepository.save(new WebPage(id, status, person, content));
+    }
+
+    @Override
+    public WebPage save(String id, LinkStatus status, String content) {
+        return this.webPageRepository.save(new WebPage(id, status, content));
     }
 
     @Override

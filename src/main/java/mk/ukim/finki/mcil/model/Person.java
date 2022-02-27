@@ -20,6 +20,10 @@ public class Person {
     private byte[] profilePicture;
 
     @ManyToMany
+    @JoinTable(
+            name = "person_works_at",
+            joinColumns = @JoinColumn(name = "person_id"),
+            inverseJoinColumns = @JoinColumn(name = "workplace_id"))
     private List<Workplace> worksAtLinks;
 
     @OneToMany
@@ -44,6 +48,11 @@ public class Person {
     private Date modifyDate;
 
     public Person() {
+    }
+
+    public Person(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public Person(String firstName, String lastName, byte[] profilePicture, List<Workplace> worksAtLinks,
