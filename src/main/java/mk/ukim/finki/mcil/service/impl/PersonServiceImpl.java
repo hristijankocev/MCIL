@@ -3,7 +3,9 @@ package mk.ukim.finki.mcil.service.impl;
 import mk.ukim.finki.mcil.model.Person;
 import mk.ukim.finki.mcil.model.WebPage;
 import mk.ukim.finki.mcil.model.Workplace;
+import mk.ukim.finki.mcil.model.enums.LinkStatus;
 import mk.ukim.finki.mcil.model.exception.PersonNotFoundException;
+import mk.ukim.finki.mcil.model.exception.WorkplaceNotFoundException;
 import mk.ukim.finki.mcil.persistence.jpa.PersonRepository;
 import mk.ukim.finki.mcil.service.PersonService;
 import org.springframework.stereotype.Service;
@@ -49,4 +51,13 @@ public class PersonServiceImpl implements PersonService {
     public Person save(Person person) {
         return this.personRepository.save(person);
     }
+
+    @Override
+    public Optional<Workplace> getWorkplace(Person person, String wid) {
+        return Optional.of(person.getWorksAtLinks().stream()
+                .filter(w -> w.getName().equals(wid))
+                .findAny()
+                .orElseThrow(() -> new WorkplaceNotFoundException(wid)));
+    }
+
 }

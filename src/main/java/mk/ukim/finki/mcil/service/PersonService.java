@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface PersonService {
     Person save(String firstName, String lastName, byte[] profilePicture, List<Workplace> worksAtLinks,
-                          List<WebPage> crawledLinks, List<WebPage> validLinks, String facebookAbout, String linkedInData);
+                List<WebPage> crawledLinks, List<WebPage> validLinks, String facebookAbout, String linkedInData);
 
     List<Person> listAll();
 
@@ -18,4 +18,6 @@ public interface PersonService {
     Optional<Person> findById(Long id);
 
     Person save(Person person);
+
+    Optional<Workplace> getWorkplace(Person person, String wid);
 }

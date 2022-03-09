@@ -1,5 +1,6 @@
 package mk.ukim.finki.mcil.model;
 
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -26,11 +27,11 @@ public class Person {
             inverseJoinColumns = @JoinColumn(name = "workplace_id"))
     private List<Workplace> worksAtLinks;
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.PERSIST})
     @JoinTable(inverseJoinColumns = @JoinColumn(name = "crawled_link_id"))
     private List<WebPage> crawledLinks;
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.PERSIST})
     @JoinTable(inverseJoinColumns = @JoinColumn(name = "valid_link_id"))
     private List<WebPage> validLinks;
 
@@ -65,6 +66,24 @@ public class Person {
         this.validLinks = validLinks;
         this.facebookAbout = facebookAbout;
         this.linkedInData = linkedInData;
+    }
+
+    public void removeWorkplace(Workplace workplace) {
+        this.worksAtLinks.remove(workplace);
+        workplace.getWorkers().remove(this);
+    }
+
+    public void removeLink(WebPage webPage) {
+        switch (webPage.getStatus()) {
+            case CRAWLED: {
+                this.crawledLinks.remove(webPage);
+                break;
+            }
+            case VALID: {
+                this.validLinks.remove(webPage);
+                break;
+            }
+        }
     }
 
     public Long getId() {
@@ -153,5 +172,9 @@ public class Person {
 
     public void setModifyDate(Date modifyDate) {
         this.modifyDate = modifyDate;
+    }
+
+    public String generateBase64Image() {
+        return Base64.encodeBase64URLSafeString(this.getProfilePicture());
     }
 }

@@ -21,6 +21,11 @@ public class WebPageServiceImpl implements WebPageService {
     }
 
     @Override
+    public WebPage save(WebPage webPage) {
+        return this.webPageRepository.save(webPage);
+    }
+
+    @Override
     public WebPage save(String id, LinkStatus status, Person person, String content) {
         return this.webPageRepository.save(new WebPage(id, status, person, content));
     }
@@ -45,5 +50,13 @@ public class WebPageServiceImpl implements WebPageService {
     public void deleteById(String id) {
         WebPage webPage = this.webPageRepository.findById(id).orElseThrow(() -> new WebPageNotFoundException(id));
         this.webPageRepository.deleteById(webPage.getId());
+    }
+
+    @Override
+    public WebPage moveLinkStatus(WebPage webPage) {
+        // If the status was 'VALID', change the status to 'CRAWLED'; else, reverse the stuff
+        webPage.setStatus(webPage.getStatus().equals(LinkStatus.CRAWLED) ? LinkStatus.VALID : LinkStatus.CRAWLED);
+
+        return webPage;
     }
 }

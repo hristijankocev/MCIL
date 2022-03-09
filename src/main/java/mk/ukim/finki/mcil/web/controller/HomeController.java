@@ -20,8 +20,6 @@ public class HomeController {
     public String getIndexPage(@RequestParam(required = false) String searchQuery,
                                Model model) {
 
-        // fbTest();
-
         // Check whether the query is empty or not
         if (searchQuery != null && !searchQuery.isEmpty()) {
             model.addAttribute("searchQuery", searchQuery);

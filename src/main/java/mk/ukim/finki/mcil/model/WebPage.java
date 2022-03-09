@@ -12,7 +12,7 @@ public class WebPage {
     @Enumerated(EnumType.STRING)
     private LinkStatus status;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.PERSIST})
     private Person person;
 
     // Crawled content

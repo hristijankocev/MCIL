@@ -1,3 +1,5 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
+
 .no-select {
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
@@ -41,9 +43,46 @@ body {
     border-radius: 24px;
 }
 
+#section-edit-person {
+    border-radius: 24px;
+    background: #1A1A1A;
+    padding: 0 1% 0 1%;
+}
+
+#section-edit-person > div {
+    border-radius: 24px;
+    padding: 0 1% 0 1%;
+}
+
+#edit-page-basic-info {
+    background: #242424;
+    border-radius: 24px;
+}
+
 @media (max-width: 978px) {
 }
 
 textarea {
     height: 24px;
 }
+
+#pfp {
+    border-radius: 50%;
+    max-height: 240px;
+    max-width: 240px;
+}
+
+.form-control-input-custom {
+    background: #1A1A1A !important;
+    border-color: #acacac !important;
+    color: #FBFBFB !important;
+    transition: border-color 150ms ease-out;
+}
+
+.form-control-input-custom:focus {
+    border-color: #131313 !important;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(126, 239, 104, 0.6) !important;
+    outline: 0 none !important;
+    transition: border-color, box-shadow 200ms linear;
+}
+

@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface WebPageService {
+    WebPage save(WebPage webPage);
+
     WebPage save(String id, LinkStatus status, Person person, String content);
 
     WebPage save(String id, LinkStatus status, String content);
@@ -17,4 +19,6 @@ public interface WebPageService {
     List<WebPage> listAll();
 
     void deleteById(String id);
+
+    WebPage moveLinkStatus(WebPage webPage);
 }

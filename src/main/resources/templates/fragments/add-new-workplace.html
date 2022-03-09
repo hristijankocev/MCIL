@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>MCIL - Add new workplace fragment</title>
+</head>
+<body>
+<div th:fragment="add-new-workplace-frag">
+    <a href="#" id="contact" class="btn btn-outline-light w-100">Maybe for future stuff</a>
+
+    <div class="cd-popup contact" role="alert">
+        <form name="contactForm" id="contact-form" class="contact-form">
+            <div class="cd-popup-container py-3">
+                <a href="" class="cd-popup-close cd-close-button">
+                    <i class="fa fa-times" style="pointer-events:none;"></i>
+                </a>
+
+                <div class="new-workplace text-dark pt-4">
+                    <label for="new-workplace">Fields n stuff:</label>
+                    <textarea type="text" id="new-workplace" name="newWorkplace"
+                              class="form-control pt-5" placeholder="separate items with semi-colons"></textarea>
+                </div>
+                <div class="pt-2">
+                    <!--                    <input type="submit" class="btn btn-outline-dark w-75" name="submit" id="submit" value="Add">-->
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="cd-popup notification" role="alert">
+        <div class="cd-popup-container">
+            <a href="" class="cd-popup-close cd-close-button">
+                <i class="fa fa-times" style="pointer-events:none;"></i>
+            </a>
+            <p>
+            <h3 id="notification-text">Thanks for getting in touch!</h3>
+            </p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
