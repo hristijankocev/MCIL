@@ -27,11 +27,11 @@ public class Person {
             inverseJoinColumns = @JoinColumn(name = "workplace_id"))
     private List<Workplace> worksAtLinks;
 
-    @OneToMany(cascade = {CascadeType.PERSIST})
+    @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     @JoinTable(inverseJoinColumns = @JoinColumn(name = "crawled_link_id"))
     private List<WebPage> crawledLinks;
 
-    @OneToMany(cascade = {CascadeType.PERSIST})
+    @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     @JoinTable(inverseJoinColumns = @JoinColumn(name = "valid_link_id"))
     private List<WebPage> validLinks;
 

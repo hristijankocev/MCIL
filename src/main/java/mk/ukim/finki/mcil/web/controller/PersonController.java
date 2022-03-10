@@ -58,24 +58,34 @@ public class PersonController {
         if (worksAt != null && !worksAt.isEmpty()) {
             for (String link : worksAt.trim().split(";")) {
                 link = link.trim();
-                if (link.length() > 0)
-                    worksAtList.add(this.workplaceService.save(link));
+                if (link.length() > 0) {
+                    String finalLink = link;
+                    if (worksAtList.stream().noneMatch(w -> w.getName().equals(finalLink)))
+                        worksAtList.add(this.workplaceService.save(link));
+                }
             }
         }
 
         if (validLinks != null && !validLinks.isEmpty()) {
             for (String link : validLinks.trim().split(";")) {
                 link = link.trim();
-                if (link.length() > 0)
-                    validLinksList.add(this.webPageService.save(link, LinkStatus.VALID, person, ""));
+                if (link.length() > 0) {
+                    String finalLink = link;
+                    if (validLinksList.stream().noneMatch(l -> l.getId().equals(finalLink)))
+                        validLinksList.add(this.webPageService.save(link, LinkStatus.VALID, person, ""));
+                }
             }
         }
 
         if (crawledLinks != null && !crawledLinks.isEmpty()) {
             for (String link : crawledLinks.trim().split(";")) {
                 link = link.trim();
-                if (link.length() > 0)
-                    crawledLinksList.add(this.webPageService.save(link, LinkStatus.CRAWLED, person, ""));
+                if (link.length() > 0) {
+                    String finalLink = link;
+                    if (crawledLinksList.stream().noneMatch(l -> l.getId().equals(finalLink))
+                            && validLinksList.stream().noneMatch(l -> l.getId().equals(finalLink)))
+                        crawledLinksList.add(this.webPageService.save(link, LinkStatus.CRAWLED, person, ""));
+                }
             }
         }
 
@@ -214,22 +224,36 @@ public class PersonController {
             if (worksAt != null && !worksAt.isEmpty()) {
                 for (String link : worksAt.trim().split(";")) {
                     link = link.trim();
-                    if (link.length() > 0)
-                        worksAtList.add(this.workplaceService.save(link));
+                    if (link.length() > 0) {
+                        String finalLink = link;
+                        // Do not add the workplace if it already exists for this person
+                        if (worksAtList.stream().noneMatch(w -> w.getName().equals(finalLink)))
+                            worksAtList.add(this.workplaceService.save(link));
+                    }
                 }
             }
             if (validLinks != null && !validLinks.isEmpty()) {
                 for (String link : validLinks.trim().split(";")) {
                     link = link.trim();
-                    if (link.length() > 0)
-                        validLinksList.add(this.webPageService.save(link, LinkStatus.VALID, person, ""));
+                    if (link.length() > 0) {
+                        String finalLink = link;
+                        // Check whether the link is already present or the link is present but in the other list which
+                        // will lead to collision
+                        if (crawledLinksList.stream().noneMatch(l -> l.getId().equals(finalLink))
+                                && validLinksList.stream().noneMatch(l -> l.getId().equals(finalLink)))
+                            validLinksList.add(this.webPageService.save(link, LinkStatus.VALID, person, ""));
+                    }
                 }
             }
             if (crawledLinks != null && !crawledLinks.isEmpty()) {
                 for (String link : crawledLinks.trim().split(";")) {
                     link = link.trim();
-                    if (link.length() > 0)
-                        crawledLinksList.add(this.webPageService.save(link, LinkStatus.CRAWLED, person, ""));
+                    if (link.length() > 0) {
+                        String finalLink = link;
+                        if (validLinksList.stream().noneMatch(l -> l.getId().equals(finalLink))
+                                && crawledLinksList.stream().noneMatch(l -> l.getId().equals(finalLink)))
+                            crawledLinksList.add(this.webPageService.save(link, LinkStatus.CRAWLED, person, ""));
+                    }
                 }
             }
             person.setValidLinks(validLinksList);
@@ -242,5 +266,16 @@ public class PersonController {
         }
 
         return "redirect:/person/edit/" + id;
+    }
+
+    @DeleteMapping(path = "/delete/{pid}")
+    public String deletePerson(@PathVariable Long pid, RedirectAttributes redirectAttributes) {
+        try {
+            Person person = this.personService.findById(pid).orElseThrow(() -> new PersonNotFoundException(pid));
+            this.personService.deleteById(person.getId());
+        } catch (PersonNotFoundException e) {
+            redirectAttributes.addAttribute("error", e.getMessage());
+        }
+        return "redirect:/";
     }
 }

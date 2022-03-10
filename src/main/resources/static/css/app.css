@@ -86,3 +86,9 @@ textarea {
     transition: border-color, box-shadow 200ms linear;
 }
 
+.landing-person-entry {
+    background: #1A1A1A;
+    border-radius: 24px;
+    font-size: 22px;
+}
+

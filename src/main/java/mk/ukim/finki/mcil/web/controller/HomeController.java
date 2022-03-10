@@ -1,5 +1,6 @@
 package mk.ukim.finki.mcil.web.controller;
 
+import mk.ukim.finki.mcil.service.impl.PersonServiceImpl;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -15,11 +16,15 @@ import java.util.*;
 @Controller
 @RequestMapping(path = "/")
 public class HomeController {
+    private final PersonServiceImpl personService;
+
+    public HomeController(PersonServiceImpl personService) {
+        this.personService = personService;
+    }
 
     @GetMapping
     public String getIndexPage(@RequestParam(required = false) String searchQuery,
                                Model model) {
-
         // Check whether the query is empty or not
         if (searchQuery != null && !searchQuery.isEmpty()) {
             model.addAttribute("searchQuery", searchQuery);
@@ -31,6 +36,7 @@ public class HomeController {
             model.addAttribute("hasQuery", true);
             model.addAttribute("queryResult", queryResult);
         }
+        model.addAttribute("people", this.personService.listAll());
 
         return "index";
     }

@@ -8,7 +8,7 @@ public class Workplace {
     @Id
     private String name;
 
-    @ManyToMany(mappedBy = "worksAtLinks")
+    @ManyToMany(mappedBy = "worksAtLinks", cascade = {CascadeType.PERSIST})
     private List<Person> workers;
 
     public Workplace() {
