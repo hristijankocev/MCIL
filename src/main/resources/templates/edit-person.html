@@ -282,6 +282,54 @@
                     </div>
                 </div>
             </div>
+
+            <section id="section-query" class="pt-5 container">
+                <div class="text-light container">
+                    <div class="row py-5 px-2">
+                        <div class="col-md-3 col-sm-12 text-sm-center text-md-start">
+                            <h4 class="fw-lighter">Google search query:</h4>
+                        </div>
+                        <div class="col-md-9 col-sm-12">
+                            <form th:action="@{'/person/edit/{pid}' (pid = ${person.getId()})}" method="get">
+                                <label for="query"></label>
+                                <div class="row">
+                                    <div class="col-md-10 col-sm-12">
+                                        <input type="text" th:value="${searchQuery} != null ? ${searchQuery}:''"
+                                               id="query"
+                                               name="searchQuery" class="form-control" style="width: 100%">
+                                    </div>
+                                    <div class="col-md-2 col-sm-12 pt-md-0 pt-sm-2">
+                                        <input type="submit" value="Get results" class="btn btn-dark w-100">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div th:if="${hasQuery}" class="pt-2 pb-5 container">
+                <section id="section-frames">
+                    <div class="text-light pt-3 pb-5">
+                        <h4 class="text-center fw-lighter">Results</h4>
+                        <div th:each="result : ${queryResult}" class="text-light py-2 px-3">
+                            <div class="container text-center py-3 px-3"
+                                 style="background: #121212; border-radius: 24px;">
+                                <div class="row justify-content-around">
+                                    <p class="pt-2 col-md-9 col-sm-12 d-inline-block" th:text="${result.key}"
+                                       style="background: #1A1A1A; border-radius: 24px; margin-bottom: 0 !important;">
+                                    </p>
+                                    <a class="pt-2 col-md-2 col-sm-12 btn btn-dark d-inline-block"
+                                       th:href="${result.value}"
+                                       th:text="Link"
+                                       style="border-radius: 24px; margin-bottom: 0 !important;" target="_blank">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
         </div>
     </div>
 </div>

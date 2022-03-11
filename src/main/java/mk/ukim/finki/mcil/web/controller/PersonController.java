@@ -103,6 +103,7 @@ public class PersonController {
     @GetMapping(path = "/edit/{id}")
     public String editPerson(@PathVariable Long id,
                              @RequestParam(required = false) String editError,
+                             @RequestParam(required = false) String searchQuery,
                              Model model) {
         if (editError != null && !editError.isEmpty()) {
             model.addAttribute("editError", editError);
@@ -110,6 +111,15 @@ public class PersonController {
         try {
             Person person = this.personService.findById(id).orElseThrow(() -> new PersonNotFoundException(id));
             model.addAttribute("person", person);
+
+            // Check whether the search query is empty or not
+            if (searchQuery != null && !searchQuery.isEmpty()) {
+                Map<String, String> queryResult = this.personService.getGoogleQueryResults(searchQuery);
+
+                model.addAttribute("searchQuery", searchQuery);
+                model.addAttribute("hasQuery", true);
+                model.addAttribute("queryResult", queryResult);
+            }
         } catch (PersonNotFoundException e) {
             model.addAttribute("error", e.getMessage());
         }

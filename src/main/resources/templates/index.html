@@ -13,63 +13,45 @@
     <div th:replace="fragments/header :: header"></div>
 </section>
 
-<section id="section-query" class="pt-5 container">
-    <div class="text-light container">
-        <div class="row py-5 px-2">
-            <div class="col-md-3 col-sm-12 text-sm-center text-md-start">
-                <h4 class="fw-lighter">Google search query:</h4>
-            </div>
-            <div class="col-md-9 col-sm-12">
-                <form action="/" method="get">
-                    <label for="query"></label>
-                    <div class="row">
-                        <div class="col-md-10 col-sm-12">
-                            <input type="text" th:value="${searchQuery} != null ? ${searchQuery}:''" id="query"
-                                   name="searchQuery" class="form-control" style="width: 100%">
-                        </div>
-                        <div class="col-md-2 col-sm-12 pt-md-0 pt-sm-2">
-                            <input type="submit" value="Go" class="btn btn-dark w-100">
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</section>
-
-<div class="container py-2 text-light">
+<div class="container py-5 text-light">
     <div class="container">
-        <div class="landing-person-entry fw-light row py-2 my-1 px-5 justify-content-evenly"
-             th:each="person : ${people}">
-            <div class="col-md-4 col-sm-2 my-auto" th:text="${person.getId()}"></div>
-            <div class="text-sm-center text-md-start col-md-4 col-sm-10 my-auto"
-                 th:text="${person.getFirstName() + ' ' + person.getLastName()}"></div>
-            <div class="col-md-4 col-sm-12">
-                <div class="dropdown">
-                    <button class="w-100 btn btn-dark dropdown-toggle" type="button"
-                            th:id="'dropdownMenuButton' + ${person.getId()}"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fa-solid fa-ellipsis-vertical w-auto"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-dark"
-                        th:attr="aria-labelledby='dropdownMenuButton' + ${person.getId()}">
-                        <li>
-                            <a th:href="@{'/person/edit/{pid}' (pid=${person.getId()})}">
-                                <button class="dropdown-item text-center" type="button" title="Edit person">
-                                    <i class="fa-regular fa-pen-to-square w-100 text-success"></i>
+        <div th:if="${!people.isEmpty()}">
+            <div><h3 class="fw-light text-center py-2">List of people</h3></div>
+            <div class="landing-person-entry fw-light row py-2 my-1 px-5 justify-content-evenly"
+                 th:each="person : ${people}">
+                <div class="col-md-4 col-sm-2 my-auto" th:text="${person.getId()}"></div>
+                <div class="text-sm-center text-md-start col-md-4 col-sm-10 my-auto"
+                     th:text="${person.getFirstName() + ' ' + person.getLastName()}"></div>
+                <div class="col-md-4 col-sm-12">
+                    <div class="dropdown">
+                        <button class="w-100 btn btn-dark dropdown-toggle" type="button"
+                                th:id="'dropdownMenuButton' + ${person.getId()}"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-ellipsis-vertical w-auto"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-dark"
+                            th:attr="aria-labelledby='dropdownMenuButton' + ${person.getId()}">
+                            <li>
+                                <a th:href="@{'/person/edit/{pid}' (pid=${person.getId()})}">
+                                    <button class="dropdown-item text-center" type="button" title="Edit person">
+                                        <i class="fa-regular fa-pen-to-square w-100 text-success"></i>
+                                    </button>
+                                </a>
+                            </li>
+                            <li>
+                                <button class="dropdown-item text-center" type="submit"
+                                        th:form="'form-del-person-' + ${person.getId()}" title="Delete person"
+                                        onclick="return confirm('Are you sure you want to delete this user ?');">
+                                    <i class="fa-solid fa-trash-can w-100 text-danger"></i>
                                 </button>
-                            </a>
-                        </li>
-                        <li>
-                            <button class="dropdown-item text-center" type="submit"
-                                    th:form="'form-del-person-' + ${person.getId()}" title="Delete person"
-                                    onclick="return confirm('Are you sure you want to delete this user ?');">
-                                <i class="fa-solid fa-trash-can w-100 text-danger"></i>
-                            </button>
-                        </li>
-                    </ul>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
+        </div>
+        <div th:if="${people.isEmpty()}">
+            <h3 class="text-center fw-light pt-5">No people added yet :(</h3>
         </div>
     </div>
 
@@ -78,27 +60,6 @@
               th:id="'form-del-person-' + ${person.getId()}">
             <input type="hidden" th:value="${person.getId()}" name="pid">
         </form>
-    </div>
-
-    <div th:if="${hasQuery}" class="pt-2 pb-5 container">
-        <section id="section-frames">
-            <div class="text-light pt-3 pb-5">
-                <h4 class="text-center fw-lighter">Results</h4>
-                <div th:each="result : ${queryResult}" class="text-light py-2 px-3">
-                    <div class="container text-center py-3 px-3" style="background: #121212; border-radius: 24px;">
-                        <div class="row justify-content-around">
-                            <p class="pt-2 col-md-9 col-sm-12 d-inline-block" th:text="${result.key}"
-                               style="background: #1A1A1A; border-radius: 24px; margin-bottom: 0 !important;">
-                            </p>
-                            <a class="pt-2 col-md-2 col-sm-12 btn btn-dark d-inline-block" th:href="${result.value}"
-                               th:text="Link"
-                               style="border-radius: 24px; margin-bottom: 0 !important;" target="_blank">
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
     </div>
 </div>
 </body>
