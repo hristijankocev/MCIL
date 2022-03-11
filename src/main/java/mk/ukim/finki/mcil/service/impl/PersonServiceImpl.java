@@ -9,7 +9,10 @@ import mk.ukim.finki.mcil.model.exception.WorkplaceNotFoundException;
 import mk.ukim.finki.mcil.persistence.jpa.PersonRepository;
 import mk.ukim.finki.mcil.service.PersonService;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,6 +61,11 @@ public class PersonServiceImpl implements PersonService {
                 .filter(w -> w.getName().equals(wid))
                 .findAny()
                 .orElseThrow(() -> new WorkplaceNotFoundException(wid)));
+    }
+
+    @Override
+    public boolean validateImage(MultipartFile file) throws IOException {
+        return ImageIO.read(file.getInputStream()) != null;
     }
 
 }

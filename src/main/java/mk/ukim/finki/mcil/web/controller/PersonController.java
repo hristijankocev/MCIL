@@ -13,8 +13,10 @@ import mk.ukim.finki.mcil.service.impl.WorkplaceServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.util.*;
 
 @Controller
@@ -277,5 +279,23 @@ public class PersonController {
             redirectAttributes.addAttribute("error", e.getMessage());
         }
         return "redirect:/";
+    }
+
+    @PostMapping(path = "/edit/{pid}/pfp")
+    public String changeProfilePicture(@PathVariable String pid,
+                                       @RequestParam MultipartFile file,
+                                       RedirectAttributes redirectAttributes) {
+        try {
+            Person person = this.personService.findById(Long.parseLong(pid))
+                    .orElseThrow(() -> new PersonNotFoundException(Long.parseLong(pid)));
+            if (this.personService.validateImage(file)) {
+                person.setProfilePicture(file.getBytes());
+                this.personService.save(person);
+            }
+        } catch (PersonNotFoundException | IOException e) {
+            redirectAttributes.addAttribute("editError", e.getMessage());
+        }
+
+        return "redirect:/person/edit/" + pid;
     }
 }

@@ -175,6 +175,6 @@ public class Person {
     }
 
     public String generateBase64Image() {
-        return Base64.encodeBase64URLSafeString(this.getProfilePicture());
+        return Base64.encodeBase64String(this.getProfilePicture());
     }
 }

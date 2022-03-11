@@ -26,7 +26,7 @@
                 <div class="row justify-content-around" style="border-radius: 24px;">
                     <div class="col-md-4 col-sm-12 pt-3" th:id="edit-page-basic-info">
                         <div class="text-center">
-                            <img th:src="${person.generateBase64Image()} ? 'data:image/jpeg;base64,' + ${person.generateBase64Image()} : '/images/sample_pfp.jpg'"
+                            <img th:src="${person.generateBase64Image()} ? 'data:image/png;base64,' + ${person.generateBase64Image()} : '/images/sample_pfp.jpg'"
                                  alt="pfp" th:id="pfp">
                         </div>
                         <h3 class="text-center py-4 fw-lighter"
@@ -34,10 +34,17 @@
                         </h3>
                         <div class="row pt-3 pb-3">
                             <div class="col-12">
-                                <label for="profile-picture" class="btn btn-outline-light w-100">Profile picture</label>
+                                <label for="profile-picture" class="btn btn-outline-light w-100">Choose picture</label>
+                            </div>
+                            <div class="col-12 pt-2">
+                                <label for="pfp-submit" class="btn btn-outline-light w-100">Apply picture</label>
                             </div>
                             <div class="d-none">
-                                <input type="file" id="profile-picture" name="profilePicture" accept="image/*">
+                                <input type="submit" id="pfp-submit" form="form-pfp">
+                            </div>
+                            <div class="d-none">
+                                <input type="file" id="profile-picture" name="file" accept="image/*"
+                                       form="form-pfp">
                             </div>
                         </div>
                     </div>
@@ -267,6 +274,10 @@
                                     <input type="hidden" th:value="${validLink.getId()}" name="linkId">
                                 </form>
                             </div>
+                            <form th:action="@{'/person/edit/{pid}/pfp' (pid = ${person.getId()})}"
+                                  th:method="post" id="form-pfp"
+                                  enctype="multipart/form-data">
+                            </form>
                         </div>
                     </div>
                 </div>
