@@ -7,7 +7,6 @@ import mk.ukim.finki.mcil.service.WorkplaceService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class WorkplaceServiceImpl implements WorkplaceService {
@@ -23,11 +22,10 @@ public class WorkplaceServiceImpl implements WorkplaceService {
     }
 
     @Override
-    public Optional<Workplace> findById(String id) {
-        return Optional
-                .of(this.workplaceRepository
-                        .findById(id)
-                        .orElseThrow(() -> new WorkplaceNotFoundException(id)));
+    public Workplace findById(String id) {
+        return this.workplaceRepository
+                .findById(id)
+                .orElseThrow(() -> new WorkplaceNotFoundException(id));
     }
 
     @Override

@@ -26,7 +26,7 @@
                 <div class="row justify-content-around" style="border-radius: 24px;">
                     <div class="col-md-4 col-sm-12 pt-3" th:id="edit-page-basic-info">
                         <div class="text-center">
-                            <img th:src="${person.generateBase64Image()} ? 'data:image/png;base64,' + ${person.generateBase64Image()} : '/images/sample_pfp.jpg'"
+                            <img th:src="${person.getProfilePicture()} ? 'data:image/png;base64,' + ${person.getProfilePicture()} : '/images/sample_pfp.jpg'"
                                  alt="pfp" th:id="pfp">
                         </div>
                         <h3 class="text-center py-4 fw-lighter"
@@ -108,7 +108,7 @@
                                         </div>
                                         <div class="col-12 pt-1">
                                             <div class="row m-0">
-                                                <div th:each="workplace, iterStat : ${person.getWorksAtLinks()}"
+                                                <div th:each="workplace, iterStat : ${person.getWorksAt()}"
                                                      th:classappend="${iterStat.index} > 0 ? 'mx-md-1 mx-sm-0' : ''"
                                                      class="btn btn-dark my-1 col-sm-12 col-md-auto">
                                                     <a th:text="${workplace.getName()}"
@@ -156,7 +156,7 @@
                                                 <div th:each="validLink, iterStat : ${person.getValidLinks()}"
                                                      th:classappend="${iterStat.index} > 0 ? 'mx-md-1 mx-sm-0' : ''"
                                                      class="btn btn-dark my-1 col-sm-12 col-md-auto">
-                                                    <a th:text="${validLink.getId()}"
+                                                    <a th:text="${validLink.getLink()}"
                                                        class="dropdown-toggle link-light text-decoration-none"
                                                        th:id="'validlink-dropdown-menu-button-' + ${iterStat.index}"
                                                        data-bs-toggle="dropdown" aria-expanded="false">
@@ -167,7 +167,7 @@
                                                         <li>
                                                             <button class="dropdown-item text-center"
                                                                     type="submit"
-                                                                    th:form="'form-del-link-' + ${person.getId()} + '-' + ${validLink.getId()}">
+                                                                    th:form="'form-del-link-' + ${validLink.getId()}">
                                                                 <i class="fa-solid fa-trash-can w-100 text-danger"></i>
                                                             </button>
                                                         </li>
@@ -201,7 +201,7 @@
                                                 <div th:each="crawledLink, iterStat : ${person.getCrawledLinks()}"
                                                      th:classappend="${iterStat.index} > 0 ? 'mx-md-1 mx-sm-0' : ''"
                                                      class="btn btn-dark my-1 col-sm-12 col-md-auto">
-                                                    <a th:text="${crawledLink.getId()}"
+                                                    <a th:text="${crawledLink.getLink()}"
                                                        class="dropdown-toggle link-light text-decoration-none"
                                                        th:id="'crawledlink-dropdown-menu-button-' + ${iterStat.index}"
                                                        data-bs-toggle="dropdown" aria-expanded="false">
@@ -212,7 +212,7 @@
                                                         <li>
                                                             <button class="dropdown-item text-center"
                                                                     type="submit"
-                                                                    th:form="'form-del-link-' + ${person.getId()} + '-' + ${crawledLink.getId()}">
+                                                                    th:form="'form-del-link-' + ${crawledLink.getId()}">
                                                                 <i class="fa-solid fa-trash-can w-100 text-danger"></i>
                                                             </button>
                                                         </li>
@@ -239,23 +239,23 @@
                                 </div>
                             </form>
                             <!-- Delete forms -->
-                            <div th:each="workplace : ${person.getWorksAtLinks()}">
+                            <div th:each="workplace : ${person.getWorksAt()}">
                                 <form th:action="@{'/person/{pid}/workplace/delete/{wid}' (pid = ${person.getId()}, wid = ${workplace.getName()})}"
                                       th:method="delete"
                                       th:id="'form-del-workplace-' + ${person.getId()} + '-' + ${workplace.getName()}">
                                 </form>
                             </div>
                             <div th:each="validLink : ${person.getValidLinks()}">
-                                <form th:action="@{'/person/{pid}/link/delete' (pid = ${person.getId()})}"
+                                <form th:action="@{'/person/link/delete'}"
                                       th:method="delete"
-                                      th:id="'form-del-link-' + ${person.getId()} + '-' + ${validLink.getId()}">
+                                      th:id="'form-del-link-' + ${validLink.getId()}">
                                     <input type="hidden" th:value="${validLink.getId()}" name="linkId">
                                 </form>
                             </div>
                             <div th:each="crawledLink : ${person.getCrawledLinks()}">
-                                <form th:action="@{'/person/{pid}/link/delete' (pid = ${person.getId()})}"
+                                <form th:action="@{'/person/link/delete'}"
                                       th:method="delete"
-                                      th:id="'form-del-link-' + ${person.getId()} + '-' + ${crawledLink.getId()}">
+                                      th:id="'form-del-link-' + ${crawledLink.getId()}">
                                     <input type="hidden" th:value="${crawledLink.getId()}" name="linkId">
                                 </form>
                             </div>
@@ -281,32 +281,32 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <section id="section-query" class="pt-5 container">
-                <div class="text-light container">
-                    <div class="row py-5 px-2">
-                        <div class="col-md-3 col-sm-12 text-sm-center text-md-start">
-                            <h4 class="fw-lighter">Google search query:</h4>
-                        </div>
-                        <div class="col-md-9 col-sm-12">
-                            <form th:action="@{'/person/edit/{pid}' (pid = ${person.getId()})}" method="get">
-                                <label for="query"></label>
-                                <div class="row">
-                                    <div class="col-md-10 col-sm-12">
-                                        <input type="text" th:value="${searchQuery} != null ? ${searchQuery}:''"
-                                               id="query"
-                                               name="searchQuery" class="form-control" style="width: 100%">
+                <section id="section-query" class="pt-5 container">
+                    <div class="text-light container">
+                        <div class="row py-5 px-2">
+                            <div class="col-md-3 col-sm-12 text-sm-center text-md-start">
+                                <h4 class="fw-lighter">Google search query:</h4>
+                            </div>
+                            <div class="col-md-9 col-sm-12">
+                                <form th:action="@{'/person/edit/{pid}' (pid = ${person.getId()})}" method="get">
+                                    <label for="query"></label>
+                                    <div class="row">
+                                        <div class="col-md-10 col-sm-12">
+                                            <input type="text" th:value="${searchQuery} != null ? ${searchQuery}:''"
+                                                   id="query"
+                                                   name="searchQuery" class="form-control" style="width: 100%">
+                                        </div>
+                                        <div class="col-md-2 col-sm-12 pt-md-0 pt-sm-2">
+                                            <input type="submit" value="Get results" class="btn btn-dark w-100">
+                                        </div>
                                     </div>
-                                    <div class="col-md-2 col-sm-12 pt-md-0 pt-sm-2">
-                                        <input type="submit" value="Get results" class="btn btn-dark w-100">
-                                    </div>
-                                </div>
-                            </form>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            </div>
 
             <div th:if="${hasQuery}" class="pt-2 pb-5 container">
                 <section id="section-frames">

@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface WorkplaceService {
     List<Workplace> listAll();
 
-    Optional<Workplace> findById(String id);
+    Workplace findById(String id);
 
     Workplace save(String name);
 

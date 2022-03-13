@@ -1,24 +1,23 @@
 package mk.ukim.finki.mcil.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import mk.ukim.finki.mcil.model.Person;
 import mk.ukim.finki.mcil.model.WebPage;
 import mk.ukim.finki.mcil.model.enums.LinkStatus;
 import mk.ukim.finki.mcil.model.exception.WebPageNotFoundException;
+import mk.ukim.finki.mcil.persistence.jpa.PersonRepository;
 import mk.ukim.finki.mcil.persistence.jpa.WebPageRepository;
 import mk.ukim.finki.mcil.service.WebPageService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class WebPageServiceImpl implements WebPageService {
+
     private final WebPageRepository webPageRepository;
-
-
-    public WebPageServiceImpl(WebPageRepository webPageRepository) {
-        this.webPageRepository = webPageRepository;
-    }
+    private final PersonRepository personRepository;
 
     @Override
     public WebPage save(WebPage webPage) {
@@ -36,9 +35,8 @@ public class WebPageServiceImpl implements WebPageService {
     }
 
     @Override
-    public Optional<WebPage> findById(String id) {
-        WebPage webPage = this.webPageRepository.findById(id).orElseThrow(() -> new WebPageNotFoundException(id));
-        return Optional.of(webPage);
+    public WebPage findById(Long id) {
+        return this.webPageRepository.findById(id).orElseThrow(() -> new WebPageNotFoundException(id));
     }
 
     @Override
@@ -47,16 +45,21 @@ public class WebPageServiceImpl implements WebPageService {
     }
 
     @Override
-    public void deleteById(String id) {
-        WebPage webPage = this.webPageRepository.findById(id).orElseThrow(() -> new WebPageNotFoundException(id));
-        this.webPageRepository.deleteById(webPage.getId());
+    public WebPage deleteById(Long id) {
+        WebPage webPage = this.webPageRepository.findById(id)
+                .orElseThrow(() -> new WebPageNotFoundException(id));
+        Person person = webPage.getPerson();
+        person.getWebPages().remove(webPage);
+        this.webPageRepository.delete(webPage);
+        this.personRepository.save(person);
+        return webPage;
     }
 
     @Override
     public WebPage moveLinkStatus(WebPage webPage) {
         // If the status was 'VALID', change the status to 'CRAWLED'; else, reverse the stuff
         webPage.setStatus(webPage.getStatus().equals(LinkStatus.CRAWLED) ? LinkStatus.VALID : LinkStatus.CRAWLED);
-
+        this.save(webPage);
         return webPage;
     }
 }

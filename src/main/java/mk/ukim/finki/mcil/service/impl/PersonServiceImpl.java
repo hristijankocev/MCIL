@@ -1,13 +1,17 @@
 package mk.ukim.finki.mcil.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import mk.ukim.finki.mcil.model.Person;
 import mk.ukim.finki.mcil.model.WebPage;
 import mk.ukim.finki.mcil.model.Workplace;
+import mk.ukim.finki.mcil.model.dto.EditPersonDTO;
+import mk.ukim.finki.mcil.model.dto.PersonDTO;
 import mk.ukim.finki.mcil.model.enums.LinkStatus;
 import mk.ukim.finki.mcil.model.exception.PersonNotFoundException;
 import mk.ukim.finki.mcil.model.exception.WorkplaceNotFoundException;
 import mk.ukim.finki.mcil.persistence.jpa.PersonRepository;
 import mk.ukim.finki.mcil.service.PersonService;
+import mk.ukim.finki.mcil.service.WorkplaceService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,26 +20,20 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PersonServiceImpl implements PersonService {
     private final PersonRepository personRepository;
-
-    public PersonServiceImpl(PersonRepository personRepository) {
-        this.personRepository = personRepository;
-    }
+    private final WorkplaceService workplaceService;
 
     @Override
-    public Person save(String firstName, String lastName, byte[] profilePicture,
-                       List<Workplace> worksAtLinks, List<WebPage> crawledLinks,
-                       List<WebPage> validLinks, String facebookAbout, String linkedInData) {
+    public Person addPerson(String firstName, String lastName, byte[] profilePicture,
+                            List<Workplace> worksAtLinks, List<WebPage> webPages, String facebookAbout, String linkedInData) {
         return this.personRepository
-                .save(new Person(firstName, lastName, profilePicture, worksAtLinks, crawledLinks, validLinks,
-                        facebookAbout, linkedInData));
+                .save(new Person(firstName, lastName, profilePicture, worksAtLinks, webPages, facebookAbout, linkedInData));
     }
 
     @Override
@@ -50,9 +48,8 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Optional<Person> findById(Long id) {
-        Person person = this.personRepository.findById(id).orElseThrow(() -> new PersonNotFoundException(id));
-        return Optional.of(person);
+    public Person findById(Long id) {
+        return this.personRepository.findById(id).orElseThrow(() -> new PersonNotFoundException(id));
     }
 
     @Override
@@ -61,16 +58,79 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
+    public Person addPerson(PersonDTO changes) {
+        Person person = new Person();
+
+        person.setFirstName(changes.getFirstName());
+        person.setLastName(changes.getLastName());
+
+        List<Workplace> worksAtList = new ArrayList<>();
+        List<WebPage> webPageList = new ArrayList<>();
+
+        return setListsAndSavePerson(changes, person, worksAtList, webPageList);
+    }
+
+    @Override
+    public Person editPerson(PersonDTO personDTO, Person person) {
+        person.setFirstName(personDTO.getFirstName());
+        person.setLastName(personDTO.getLastName());
+        person.setLinkedInData(personDTO.getLinkedinData());
+        person.setFacebookAbout(personDTO.getFacebookAbout());
+
+        List<Workplace> worksAtList = person.getWorksAtLinks();
+        List<WebPage> webPageList = person.getWebPages();
+
+        return setListsAndSavePerson(personDTO, person, worksAtList, webPageList);
+    }
+
+    private Person setListsAndSavePerson(PersonDTO personDTO, Person person, List<Workplace> worksAtList, List<WebPage> webPageList) {
+        if (!personDTO.getWorksAt().isEmpty()) {
+            for (String link : personDTO.getWorksAt().trim().split(";")) {
+                link = link.trim();
+                if (link.length() > 0) {
+                    String finalLink = link;
+                    if (worksAtList.stream().noneMatch(w -> w.getName().equals(finalLink)))
+                        worksAtList.add(this.workplaceService.save(link));
+                }
+            }
+            person.setWorksAtLinks(worksAtList);
+        }
+
+        if (!personDTO.getValidLinks().isEmpty()) {
+            for (String link : personDTO.getValidLinks().trim().split(";")) {
+                link = link.trim();
+                if (link.length() > 0) {
+                    String finalLink = link;
+                    if (webPageList.stream().noneMatch(l -> l.getLink().equals(finalLink)))
+                        webPageList.add(new WebPage(finalLink, LinkStatus.VALID, person, ""));
+                }
+            }
+        }
+
+
+        if (!personDTO.getCrawledLinks().isEmpty()) {
+            for (String link : personDTO.getCrawledLinks().trim().split(";")) {
+                link = link.trim();
+                if (link.length() > 0) {
+                    String finalLink = link;
+                    if (webPageList.stream().noneMatch(l -> l.getLink().equals(finalLink)))
+                        webPageList.add(new WebPage(link, LinkStatus.CRAWLED, person, ""));
+                }
+            }
+        }
+        person.setWebPages(webPageList);
+
+        this.personRepository.save(person);
+
+        return person;
+    }
+
+    @Override
     public Optional<Workplace> getWorkplace(Person person, String wid) {
         return Optional.of(person.getWorksAtLinks().stream()
                 .filter(w -> w.getName().equals(wid))
                 .findAny()
                 .orElseThrow(() -> new WorkplaceNotFoundException(wid)));
-    }
-
-    @Override
-    public boolean validateImage(MultipartFile file) throws IOException {
-        return ImageIO.read(file.getInputStream()) != null;
     }
 
     /**
@@ -100,5 +160,49 @@ public class PersonServiceImpl implements PersonService {
 
         return dict;
     }
+
+    @Override
+    public Person changePfp(String pid, MultipartFile file) throws IOException {
+        Person person = this.findById(Long.parseLong(pid));
+        if (ImageIO.read(file.getInputStream()) != null) {
+            person.setProfilePicture(file.getBytes());
+            this.save(person);
+        }
+        return person;
+    }
+
+    @Override
+    public EditPersonDTO convertToDTO(Long personId) {
+        EditPersonDTO personDTO = new EditPersonDTO();
+        Person person = this.findById(personId);
+
+        personDTO.setId(personId);
+        personDTO.setFirstName(person.getFirstName());
+        personDTO.setLastName(person.getLastName());
+        personDTO.setFacebookAbout(person.getFacebookAbout());
+        personDTO.setLinkedInData(person.getLinkedInData());
+        personDTO.setWorksAt(person.getWorksAtLinks());
+        personDTO.setProfilePicture(person.generateBase64Image());
+
+        personDTO.setCrawledLinks(person.getWebPages().stream()
+                .filter(w -> w.getStatus().equals(LinkStatus.CRAWLED))
+                .collect(Collectors.toList()));
+
+        personDTO.setValidLinks(person.getWebPages().stream()
+                .filter(w -> w.getStatus().equals(LinkStatus.VALID))
+                .collect(Collectors.toList()));
+
+        return personDTO;
+    }
+
+    @Override
+    public Person removeWorkplace(Long personId, String workplaceId) {
+        Person person = this.findById(personId);
+        Workplace workplace = this.workplaceService.findById(workplaceId);
+        person.getWorksAtLinks().remove(workplace);
+        this.save(person);
+        return person;
+    }
+
 
 }

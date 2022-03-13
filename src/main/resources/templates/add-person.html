@@ -48,8 +48,9 @@
                             <label for="works-at">Works at: </label>
                         </div>
                         <div class="col-md-9 col-sm-12">
-                            <datalist th:if="!${workplaces.isEmpty()}" id="existing-workplaces">
-                                <option th:each="workplace : ${workplaces}" th:value="${workplace.getName()}"></option>
+                            <datalist th:if="${workplacesToChooseFrom} != null" id="existing-workplaces">
+                                <option th:each="workplace : ${workplacesToChooseFrom}"
+                                        th:value="${workplace.getName()}"></option>
                             </datalist>
                             <input name="worksAt" class="form-control" id="works-at" list="existing-workplaces"
                                    placeholder="separate items with semi-colons">

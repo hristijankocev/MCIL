@@ -1,18 +1,23 @@
 package mk.ukim.finki.mcil.model;
 
+import lombok.Data;
 import mk.ukim.finki.mcil.model.enums.LinkStatus;
 
 import javax.persistence.*;
 
 @Entity
+@Data
 public class WebPage {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String link;
 
     @Enumerated(EnumType.STRING)
     private LinkStatus status;
 
-    @OneToOne(cascade = {CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.PERSIST})
     private Person person;
 
     // Crawled content
@@ -23,48 +28,16 @@ public class WebPage {
     public WebPage() {
     }
 
-    public WebPage(String id, LinkStatus status, String content) {
-        this.id = id;
+    public WebPage(String link, LinkStatus status, String content) {
+        this.link = link;
         this.status = status;
         this.content = content;
     }
 
-    public WebPage(String id, LinkStatus status, Person person, String content) {
-        this.id = id;
+    public WebPage(String link, LinkStatus status, Person person, String content) {
+        this.link = link;
         this.status = status;
         this.person = person;
-        this.content = content;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public LinkStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(LinkStatus status) {
-        this.status = status;
-    }
-
-    public Person getPerson() {
-        return person;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
         this.content = content;
     }
 }

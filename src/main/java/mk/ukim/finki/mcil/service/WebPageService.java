@@ -5,7 +5,6 @@ import mk.ukim.finki.mcil.model.WebPage;
 import mk.ukim.finki.mcil.model.enums.LinkStatus;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface WebPageService {
     WebPage save(WebPage webPage);
@@ -14,11 +13,11 @@ public interface WebPageService {
 
     WebPage save(String id, LinkStatus status, String content);
 
-    Optional<WebPage> findById(String id);
+    WebPage findById(Long id);
 
     List<WebPage> listAll();
 
-    void deleteById(String id);
+    WebPage deleteById(Long id);
 
     WebPage moveLinkStatus(WebPage webPage);
 }

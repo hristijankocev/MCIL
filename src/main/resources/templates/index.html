@@ -15,6 +15,7 @@
 
 <div class="container py-5 text-light">
     <div class="container">
+        <div th:if="${error}" th:text="${error}" class="text-center text-danger"></div>
         <div th:if="${!people.isEmpty()}">
             <div><h3 class="fw-light text-center py-2">List of people</h3></div>
             <div class="landing-person-entry fw-light row py-2 my-1 px-5 justify-content-evenly"
@@ -49,18 +50,18 @@
                     </div>
                 </div>
             </div>
+            <div th:each="person : ${people}">
+                <form th:action="@{'/person/delete/{pid}' (pid = ${person.getId()})}" th:method="delete"
+                      th:id="'form-del-person-' + ${person.getId()}">
+                    <input type="hidden" th:value="${person.getId()}" name="pid">
+                </form>
+            </div>
         </div>
         <div th:if="${people.isEmpty()}">
             <h3 class="text-center fw-light pt-5">No people added yet :(</h3>
         </div>
     </div>
 
-    <div th:each="person : ${people}">
-        <form th:action="@{'/person/delete/{pid}' (pid = ${person.getId()})}" th:method="delete"
-              th:id="'form-del-person-' + ${person.getId()}">
-            <input type="hidden" th:value="${person.getId()}" name="pid">
-        </form>
-    </div>
 </div>
 </body>
 </html>
