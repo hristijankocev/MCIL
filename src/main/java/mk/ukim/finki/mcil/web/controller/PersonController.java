@@ -70,7 +70,6 @@ public class PersonController {
                 Map<String, String> queryResult = this.personService.getGoogleQueryResults(searchQuery);
 
                 model.addAttribute("searchQuery", searchQuery);
-                model.addAttribute("hasQuery", true);
                 model.addAttribute("queryResult", queryResult);
             }
         } catch (PersonNotFoundException e) {
