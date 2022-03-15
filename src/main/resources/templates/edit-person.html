@@ -26,8 +26,9 @@
                 <div class="row justify-content-around" style="border-radius: 24px;">
                     <div class="col-md-4 col-sm-12 pt-3" th:id="edit-page-basic-info">
                         <div class="text-center">
-                            <img th:src="${person.getProfilePicture()} ? 'data:image/png;base64,' + ${person.getProfilePicture()} : '/images/sample_pfp.jpg'"
-                                 alt="pfp" th:id="pfp">
+                            <!--suppress RequiredAttributes -->
+                            <img alt="pfp" th:id="pfp"
+                                 th:src="${person.getProfilePicture()} ? 'data:image/png;base64,' + ${person.getProfilePicture()} : '/images/sample_pfp.jpg'">
                         </div>
                         <h3 class="text-center py-4 fw-lighter"
                             th:text="${person.getFirstName()} + ' ' + ${person.getLastName()}">
@@ -35,9 +36,6 @@
                         <div class="row pt-3 pb-3">
                             <div class="col-12">
                                 <label for="profile-picture" class="btn btn-outline-light w-100">Choose picture</label>
-                            </div>
-                            <div class="col-12 pt-2">
-                                <label for="pfp-submit" class="btn btn-outline-light w-100">Apply picture</label>
                             </div>
                             <div class="d-none">
                                 <input type="submit" id="pfp-submit" form="form-pfp">
@@ -293,7 +291,8 @@
                                     <label for="query"></label>
                                     <div class="row">
                                         <div class="col-md-10 col-sm-12">
-                                            <input type="text" th:value="${searchQuery} != null ? ${searchQuery}:''"
+                                            <input type="text"
+                                                   th:value="${searchQuery} != null ? ${searchQuery} : ${person.getFirstName()} + ' ' + ${person.getLastName()}"
                                                    id="query"
                                                    name="searchQuery" class="form-control" style="width: 100%">
                                         </div>
@@ -308,7 +307,7 @@
                 </section>
             </div>
 
-            <div th:if="${hasQuery}" class="pt-2 pb-5 container">
+            <div th:if="${queryResult} != null" class="pt-2 pb-5 container">
                 <section id="section-frames">
                     <div class="text-light pt-3 pb-5">
                         <h4 class="text-center fw-lighter">Results</h4>

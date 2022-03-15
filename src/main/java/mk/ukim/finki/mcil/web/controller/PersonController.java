@@ -11,11 +11,14 @@ import mk.ukim.finki.mcil.model.exception.WorkplaceNotFoundException;
 import mk.ukim.finki.mcil.service.PersonService;
 import mk.ukim.finki.mcil.service.WebPageService;
 import mk.ukim.finki.mcil.service.WorkplaceService;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -45,9 +48,9 @@ public class PersonController {
             return "add-person";
         }
 
-        Person person = this.personService.addPerson(personDTO);
+        this.personService.addPerson(personDTO);
 
-        return "redirect:/person/edit/" + person.getId();
+        return "redirect:/";
     }
 
     @GetMapping(path = "/edit/{id}")
@@ -165,9 +168,24 @@ public class PersonController {
             EditPersonDTO personDTO = this.personService.convertToDTO(person.getId());
             model.addAttribute("person", personDTO);
         } catch (PersonNotFoundException | IOException e) {
+            System.out.println(e.getMessage());
             model.addAttribute("error", e.getMessage());
         }
 
         return "edit-person";
     }
+
+    @ControllerAdvice
+    @RequiredArgsConstructor
+    public static class FileUploadExceptionAdvice {
+        private final Environment env;
+
+        @ExceptionHandler(MaxUploadSizeExceededException.class)
+        @ResponseBody
+        @ResponseStatus(value = HttpStatus.FORBIDDEN)
+        public String handleMaxSizeException() {
+            return String.format("Maximum filesize of %s exceeded.", env.getProperty("spring.servlet.multipart.max-request-size"));
+        }
+    }
+
 }
