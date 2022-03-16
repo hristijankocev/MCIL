@@ -25,24 +25,29 @@
             <div th:if="${person} != null">
                 <div class="row justify-content-around" style="border-radius: 24px;">
                     <div class="col-md-4 col-sm-12 pt-3" th:id="edit-page-basic-info">
-                        <div class="text-center">
-                            <!--suppress RequiredAttributes -->
-                            <img alt="pfp" th:id="pfp"
-                                 th:src="${person.getProfilePicture()} ? 'data:image/png;base64,' + ${person.getProfilePicture()} : '/images/sample_pfp.jpg'">
-                        </div>
-                        <h3 class="text-center py-4 fw-lighter"
-                            th:text="${person.getFirstName()} + ' ' + ${person.getLastName()}">
-                        </h3>
-                        <div class="row pt-3 pb-3">
-                            <div class="col-12">
-                                <label for="profile-picture" class="btn btn-outline-light w-100">Choose picture</label>
+                        <div class="row justify-content-center">
+                            <div class="row justify-content-center">
+                                <div class="text-center col-6">
+                                    <!--suppress RequiredAttributes -->
+                                    <img alt="pfp" th:id="pfp"
+                                         th:src="${person.getProfilePicture()} ? 'data:image/png;base64,' + ${person.getProfilePicture()} : '/images/sample_pfp.jpg'">
+                                </div>
                             </div>
-                            <div class="d-none">
-                                <input type="submit" id="pfp-submit" form="form-pfp">
-                            </div>
-                            <div class="d-none">
-                                <input type="file" id="profile-picture" name="file" accept="image/*"
-                                       form="form-pfp">
+                            <h3 class="text-center py-4 fw-lighter col-12"
+                                th:text="${person.getFirstName()} + ' ' + ${person.getLastName()}">
+                            </h3>
+                            <div class="row pt-3 pb-3 col-12">
+                                <div class="col-12">
+                                    <label for="profile-picture" class="btn btn-outline-light w-100">Choose
+                                        picture</label>
+                                </div>
+                                <div class="d-none">
+                                    <input type="submit" id="pfp-submit" form="form-pfp">
+                                </div>
+                                <div class="d-none">
+                                    <input type="file" id="profile-picture" name="file" accept="image/*"
+                                           form="form-pfp">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -61,7 +66,7 @@
                                                    th:value="${person.getFirstName()}" required>
                                         </div>
                                     </div>
-                                    <div class="col-md-5 offset-md-2 col-sm-12">
+                                    <div class="col-md-5 offset-md-2 col-sm-12 pt-2 pt-md-0 pt-sm-2">
                                         <div class="col-12">
                                             <label for="last-name">Last name</label>
                                         </div>
@@ -72,7 +77,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row pt-md-3 pt-sm-2">
+                                <div class="row pt-md-3 pt-2 pt-sm-2">
                                     <div class="col-md-5 col-sm-12">
                                         <div class="col-12">
                                             <label for="facebook-about">Facebook about</label>
@@ -83,7 +88,7 @@
                                                   th:text="${person.getFacebookAbout()}"></textarea>
                                         </div>
                                     </div>
-                                    <div class="col-md-5 offset-md-2">
+                                    <div class="col-md-5 offset-md-2 pt-2 pt-md-0 pt-sm-2">
                                         <div class="co-12">
                                             <label for="linkedin-data">Linkedin data</label>
                                         </div>
@@ -94,14 +99,14 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row pt-md-3 pt-sm-2">
+                                <div class="row pt-3 pt-md-3 pt-sm-3">
                                     <div class="col-md-12 col-sm-12">
                                         <div class="col-12">
                                             <label for="workplaces">Workplaces</label>
                                         </div>
                                         <div class="col-12 pt-2">
                                         <textarea type="text" id="workplaces" name="worksAt"
-                                                  class=" form-control-input-custom form-control"
+                                                  class="form-control-input-custom form-control"
                                                   placeholder="separate items with semi-colons"></textarea>
                                         </div>
                                         <div class="col-12 pt-1">
@@ -131,9 +136,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div th:replace="fragments/link-preview :: add-new-workplace-frag"></div>
-
-                                <div class="row pt-md-3 pt-sm-2">
+                                <div class="row pt-3 pt-md-3 pt-sm-3">
                                     <div class="col-md-12 col-sm-12">
                                         <div class="col-12">
                                             <label for="valid-links">Valid links</label>
@@ -187,7 +190,7 @@
                                     </div>
                                 </div>
 
-                                <div class="row pt-md-3 pt-sm-2">
+                                <div class="row pt-3 pt-md-3 pt-sm-3">
                                     <div class="col-md-12 col-sm-12">
                                         <div class="col-12">
                                             <label for="crawled-links">Crawled links</label>
@@ -238,7 +241,10 @@
                                                class="btn btn-outline-light w-100" form="whole-info-form">
                                     </div>
                                 </div>
+                                <div th:replace="fragments/link-preview :: add-new-workplace-frag"></div>
+
                             </form>
+
                             <!-- Delete forms -->
                             <div th:each="workplace : ${person.getWorksAt()}">
                                 <form th:action="@{'/person/{pid}/workplace/delete/{wid}' (pid = ${person.getId()}, wid = ${workplace.getName()})}"
@@ -281,7 +287,9 @@
                             </form>
                         </div>
                     </div>
+
                 </div>
+
 
                 <section id="section-query" class="pt-5 container">
                     <div class="text-light container">

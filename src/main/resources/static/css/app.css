@@ -1,3 +1,4 @@
+/*noinspection CssUnknownTarget*/
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
 
 .no-select {
@@ -68,8 +69,13 @@ textarea {
 
 #pfp {
     border-radius: 50%;
-    max-height: 240px;
-    max-width: 240px;
+    max-height: 100%;
+    max-width: 100%;
+    display: inline-block;
+    overflow: hidden;
+    line-height: 1;
+    vertical-align: middle;
+    flex-shrink: 0;
 }
 
 .form-control-input-custom {
