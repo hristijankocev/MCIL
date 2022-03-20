@@ -29,7 +29,7 @@ public interface PersonService {
 
     Optional<Workplace> getWorkplace(Person person, String wid);
 
-    Map<String, String> getGoogleQueryResults(String query);
+    void getGoogleQueryResults(String query, EditPersonDTO personDTO);
 
     Person changePfp(String pid, MultipartFile file) throws IOException;
 

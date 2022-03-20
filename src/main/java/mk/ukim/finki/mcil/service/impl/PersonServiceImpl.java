@@ -135,11 +135,9 @@ public class PersonServiceImpl implements PersonService {
 
     /**
      * @param query: the thing we want to search on google
-     * @return returns a Map in the form of Title(google result title),Link(the link for the google result)
      */
     @Override
-    public Map<String, String> getGoogleQueryResults(String query) {
-        Map<String, String> dict = new HashMap<>();
+    public void getGoogleQueryResults(String query, EditPersonDTO personDTO) {
         final String connUrl = "https://www.google.com/search?q=" + query.replaceAll(" ", "+");
 
         try {
@@ -147,18 +145,23 @@ public class PersonServiceImpl implements PersonService {
             final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.87 Safari/537.36";
             // Fetch the page
             final Document doc = Jsoup.connect(connUrl).userAgent(USER_AGENT).get();
+            Person person = this.findById(personDTO.getId());
             // Select and traverse the elements that contain the links and extract the info
             for (Element result : doc.select("div.yuRUbf > a")) {
-                final String title = result.text();
+                // final String title = result.text();
                 final String url = result.attr("href");
                 // Store the result in a dictionary
-                dict.put(title, url);
+                // Store as crawled links for the person
+                if (person.getWebPages().stream().noneMatch(w -> w.getLink().equals(url)))
+                    person.getWebPages().add(new WebPage(url, LinkStatus.CRAWLED, person, ""));
             }
+            personDTO.setCrawledLinks(person.getWebPages().stream()
+                    .filter(w -> w.getStatus().equals(LinkStatus.CRAWLED))
+                    .collect(Collectors.toList()));
+            this.save(person);
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-
-        return dict;
     }
 
     @Override

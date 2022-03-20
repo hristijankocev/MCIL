@@ -150,7 +150,8 @@
                                             <div class="row m-0">
                                                 <div th:each="validLink, iterStat : ${person.getValidLinks()}"
                                                      th:classappend="${iterStat.index} > 0 ? 'mx-md-1 mx-sm-0' : ''"
-                                                     class="btn btn-dark my-1 col-sm-12 col-md-auto">
+                                                     class="btn btn-dark my-1 col-sm-12 col-md-auto overflow-hidden"
+                                                     th:title="${validLink.getLink()}">
                                                     <a th:text="${validLink.getLink()}"
                                                        class="dropdown-toggle link-light text-decoration-none"
                                                        th:id="'validlink-dropdown-menu-button-' + ${iterStat.index}"
@@ -204,7 +205,8 @@
                                             <div class="row m-0">
                                                 <div th:each="crawledLink, iterStat : ${person.getCrawledLinks()}"
                                                      th:classappend="${iterStat.index} > 0 ? 'mx-md-1 mx-sm-0' : ''"
-                                                     class="btn btn-dark my-1 col-sm-12 col-md-auto">
+                                                     class="btn btn-dark my-1 col-sm-12 col-md-auto overflow-hidden"
+                                                     th:title="${crawledLink.getLink()}">
                                                     <a th:text="${crawledLink.getLink()}"
                                                        class="dropdown-toggle link-light text-decoration-none"
                                                        th:id="'crawledlink-dropdown-menu-button-' + ${iterStat.index}"
@@ -214,10 +216,10 @@
                                                         th:attr="aria-labelledby='crawledlink-dropdown-menu-button-' + ${iterStat.index}"
                                                         style="min-width: auto !important;">
                                                         <li>
-                                                            <button class="dropdown-item text-center"
-                                                                    type="submit"
-                                                                    th:form="'form-del-link-' + ${crawledLink.getId()}">
-                                                                <i class="fa-solid fa-trash-can w-100 text-danger"></i>
+                                                            <button class="preview-link dropdown-item text-center"
+                                                                    title="preview link"
+                                                                    th:attr="linkId=${crawledLink.getId()}">
+                                                                <i class="fa-regular fa-eye w-100 text-success"></i>
                                                             </button>
                                                         </li>
                                                         <li class="pt-2">
@@ -226,6 +228,13 @@
                                                                     title="move to valid links"
                                                                     th:form="'form-move-link-' + ${crawledLink.getId()}">
                                                                 <i class="fa-solid fa-angles-up w-100 text-info"></i>
+                                                            </button>
+                                                        </li>
+                                                        <li class="pt-2">
+                                                            <button class="dropdown-item text-center"
+                                                                    type="submit"
+                                                                    th:form="'form-del-link-' + ${crawledLink.getId()}">
+                                                                <i class="fa-solid fa-trash-can w-100 text-danger"></i>
                                                             </button>
                                                         </li>
                                                     </ul>
@@ -303,7 +312,7 @@
                                     <div class="row">
                                         <div class="col-md-10 col-sm-12">
                                             <input type="text"
-                                                   th:value="${searchQuery} != null ? ${searchQuery} : ${person.getFirstName()} + ' ' + ${person.getLastName()}"
+                                                   th:value="${person.getFirstName()} + ' ' + ${person.getLastName()}"
                                                    id="query"
                                                    name="searchQuery" class="form-control" style="width: 100%">
                                         </div>
@@ -318,28 +327,6 @@
                 </section>
             </div>
 
-            <div th:if="${queryResult} != null" class="pt-2 pb-5 container">
-                <section id="section-frames">
-                    <div class="text-light pt-3 pb-5">
-                        <h4 class="text-center fw-lighter">Results</h4>
-                        <div th:each="result : ${queryResult}" class="text-light py-2 px-3">
-                            <div class="container text-center py-3 px-3"
-                                 style="background: #121212; border-radius: 24px;">
-                                <div class="row justify-content-around">
-                                    <p class="pt-2 col-md-9 col-sm-12 d-inline-block" th:text="${result.key}"
-                                       style="background: #1A1A1A; border-radius: 24px; margin-bottom: 0 !important;">
-                                    </p>
-                                    <a class="pt-2 col-md-2 col-sm-12 btn btn-dark d-inline-block"
-                                       th:href="${result.value}"
-                                       th:text="Link"
-                                       style="border-radius: 24px; margin-bottom: 0 !important;" target="_blank">
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </div>
         </div>
     </div>
 </div>

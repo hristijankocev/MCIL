@@ -1,7 +1,4 @@
 $(document).ready(function ($) {
-    /* ------------------------- */
-    /* Contact Form Interactions */
-    /* ------------------------- */
     const loading = $('#loading');
     const linkInfo = $('#link-info');
     const infoFragment = $('.cd-popup');
@@ -50,23 +47,33 @@ $(document).ready(function ($) {
                 console.log(data);
                 $('#loading').hide();
                 $('#link-info').show();
-
                 $('#link-title').text(data['ogTitle']);
-                $('#link-description').text(data['ogDesc']);
+                $('#link-description').text(data['ogDesc'] !== "" ? data['ogDesc'] : data['desc']);
                 $('#link-img').attr('src', data['ogImage']);
                 $('#link-url')
                     .text(data['ogUrl'])
                     .attr('href', data['ogUrl']);
-                // $('#link-url').;
             },
 
             error: function (jqXHR, status) {
-                $('#link-title').text("Failed to fetch data.");
-                loading.classList.remove('display');
-                console.log(status);
+                clearFields()
+                $('#link-title')
+                    .css({'color': 'red'})
+                    .text('Failed to fetch data. Status: ' + jqXHR.responseJSON.status);
+                $('#link-description').text(jqXHR.responseJSON.message);
+                $('#loading').hide();
+                $('#link-info').show();
                 console.log(jqXHR);
             }
         });
+    }
+
+    // Reset field values
+    function clearFields() {
+        $('#link-title').text('').removeAttr('style');
+        $('#link-description').text('').removeAttr('style');
+        $('#link-img').removeAttr('src', '').removeAttr('style');
+        $('#link-url').text('').removeAttr('style');
     }
 });
 

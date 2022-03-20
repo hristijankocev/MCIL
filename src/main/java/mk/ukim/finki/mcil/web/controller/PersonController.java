@@ -24,7 +24,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.*;
 
 @Controller
 @RequestMapping(path = "/person")
@@ -67,10 +66,9 @@ public class PersonController {
 
             // Check whether the search query is empty or not
             if (searchQuery != null && !searchQuery.isEmpty()) {
-                Map<String, String> queryResult = this.personService.getGoogleQueryResults(searchQuery);
-
-                model.addAttribute("searchQuery", searchQuery);
-                model.addAttribute("queryResult", queryResult);
+                this.personService.getGoogleQueryResults(searchQuery, person);
+                model.addAttribute("person", person);
+                return "redirect:/person/edit/" + person.getId();
             }
         } catch (PersonNotFoundException e) {
             model.addAttribute("error", e.getMessage());
