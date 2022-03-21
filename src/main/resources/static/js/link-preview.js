@@ -37,7 +37,7 @@ $(document).ready(function ($) {
     function addData(data) {
         $.ajax({
             type: "GET",
-            url: "http://localhost:8080/webpage/preview",
+            url: "/webpage/preview",
             data: data,
             contentType: "application/json; charset=utf-8",
             crossDomain: false,
