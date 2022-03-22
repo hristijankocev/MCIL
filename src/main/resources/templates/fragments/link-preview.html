@@ -1,25 +1,37 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>MCIL - Add new workplace fragment</title>
+    <title>MCIL - Link preview fragment</title>
 </head>
 <body>
-<div th:fragment="add-new-workplace-frag">
+<div th:fragment="link-preview-frag">
     <div class="cd-popup contact text-dark" role="alert">
         <div class="cd-popup-container py-3">
             <a href="" class="cd-popup-close cd-close-button">
                 <i class="fa fa-times" style="pointer-events:none;"></i>
             </a>
             <div id="loading"></div>
-            <div id="link-info">
-                <div class="new-workplace pt-2">
-                    <h3 class="text-center fw-light" id="link-title"></h3>
+            <div id="link-info" class="container">
+                <div class="row">
+                    <div class="pt-2">
+                        <h3 class="text-center fw-light" id="link-title"></h3>
+                    </div>
                 </div>
                 <div class="row pt-2 m-3">
-                    <div class="col-md-4 col-sm-12">
-                        <img src="" alt="link-img" id="link-img" style="max-width: 120px; height: auto">
+                    <div class="col-md-4 col-sm-12" style="border: 1px solid black; border-radius: 5%">
+                        <div class="row pt-2">
+                            <div class="col-12">
+                                <img src="" alt="link-img" id="link-img" style="max-width: 120px; height: auto">
+                            </div>
+                            <div class="col-12 py-2">
+                                <button class="w-100 btn btn-outline-dark" form="pfp-external-form" type="submit">
+                                    Set photo
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-8 col-sm-12 pt-2 text-cente" id="link-description">
+                    <div class="col-md-7 offset-md-1 col-sm-12 pt-2 my-2 my-md-0 text-center" id="link-description"
+                         style="border: 1px solid black; border-radius: 5%;">
                     </div>
                 </div>
                 <div class="row">

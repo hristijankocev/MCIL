@@ -50,6 +50,7 @@ $(document).ready(function ($) {
                 $('#link-title').text(data['ogTitle']);
                 $('#link-description').text(data['ogDesc'] !== "" ? data['ogDesc'] : data['desc']);
                 $('#link-img').attr('src', data['ogImage']);
+                $('#external-pic-url').val(data['ogImage']);
                 $('#link-url')
                     .text(data['ogUrl'])
                     .attr('href', data['ogUrl']);

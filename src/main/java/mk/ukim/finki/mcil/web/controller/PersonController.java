@@ -165,7 +165,21 @@ public class PersonController {
             EditPersonDTO personDTO = this.personService.convertToDTO(person.getId());
             model.addAttribute("person", personDTO);
         } catch (PersonNotFoundException | IOException e) {
-            System.out.println(e.getMessage());
+            model.addAttribute("error", e.getMessage());
+        }
+
+        return "edit-person";
+    }
+
+    @PostMapping(path = "/edit/{pid}/pfp/external")
+    public String changeProfilePictureFromUrl(@PathVariable String pid,
+                                              @RequestParam String pictureUrl,
+                                              Model model) {
+        try {
+            Person person = this.personService.changePfpExternalSource(pid, pictureUrl);
+            EditPersonDTO personDTO = this.personService.convertToDTO(person.getId());
+            model.addAttribute("person", personDTO);
+        } catch (PersonNotFoundException | IOException e) {
             model.addAttribute("error", e.getMessage());
         }
 

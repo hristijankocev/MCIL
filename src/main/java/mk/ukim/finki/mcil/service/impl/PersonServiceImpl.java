@@ -19,8 +19,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -169,6 +173,21 @@ public class PersonServiceImpl implements PersonService {
         Person person = this.findById(Long.parseLong(pid));
         if (ImageIO.read(file.getInputStream()) != null) {
             person.setProfilePicture(file.getBytes());
+            this.save(person);
+        }
+        return person;
+    }
+
+    @Override
+    public Person changePfpExternalSource(String pid, String pictureUrl) throws IOException {
+        Person person = this.findById(Long.parseLong(pid));
+        URL url = new URL(pictureUrl);
+        BufferedImage bufferedImage = ImageIO.read(url);
+        if (bufferedImage != null) {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ImageIO.write(bufferedImage, "png", byteArrayOutputStream);
+            byte[] imageBytes = byteArrayOutputStream.toByteArray();
+            person.setProfilePicture(imageBytes);
             this.save(person);
         }
         return person;

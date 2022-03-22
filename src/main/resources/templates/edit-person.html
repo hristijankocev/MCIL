@@ -250,7 +250,7 @@
                                                class="btn btn-outline-light w-100" form="whole-info-form">
                                     </div>
                                 </div>
-                                <div th:replace="fragments/link-preview :: add-new-workplace-frag"></div>
+                                <div th:replace="fragments/link-preview :: link-preview-frag"></div>
 
                             </form>
 
@@ -325,6 +325,12 @@
                         </div>
                     </div>
                 </section>
+
+                <!-- Form for external link pfp change -->
+                <form th:action="@{'/person/edit/{pid}/pfp/external' (pid = ${person.getId()})}"
+                      id="pfp-external-form" method="post">
+                    <input type="hidden" name="pictureUrl" id="external-pic-url">
+                </form>
             </div>
 
         </div>
