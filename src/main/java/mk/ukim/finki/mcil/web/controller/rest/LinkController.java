@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
 
 @RequiredArgsConstructor
 @RestController
@@ -23,7 +22,7 @@ public class LinkController {
     public ResponseEntity<Link> getPreview(@RequestParam Long linkId) {
         try {
             return new ResponseEntity<>(this.linkService.extractPreview(linkId), HttpStatus.OK);
-        } catch (WebPageNotFoundException | IOException e) {
+        } catch (WebPageNotFoundException e) {
             throw new ResponseStatusException(404, e.getMessage(), e);
         }
     }

@@ -23,6 +23,7 @@ $(document).ready(function ($) {
     infoFragment.on('click', function (event) {
         if ($(event.target).is('.cd-popup-close') || $(event.target).is('.cd-popup')) {
             event.preventDefault();
+            clearFields();
             $(this).removeClass('is-visible');
         }
     });
@@ -30,6 +31,7 @@ $(document).ready(function ($) {
     // close popup when clicking the esc keyboard button
     $(document).keyup(function (event) {
         if (event.key === "Escape") {
+            clearFields();
             infoFragment.removeClass('is-visible');
         }
     });
@@ -47,10 +49,13 @@ $(document).ready(function ($) {
                 console.log(data);
                 $('#loading').hide();
                 $('#link-info').show();
-                $('#link-title').text(data['ogTitle']);
+                $('#link-title').text(data['ogTitle'] !== "" ? data['ogTitle'] : data['title']);
                 $('#link-description').text(data['ogDesc'] !== "" ? data['ogDesc'] : data['desc']);
                 $('#link-img').attr('src', data['ogImage']);
                 $('#external-pic-url').val(data['ogImage']);
+                $('#image-link')
+                    .text(data['ogImage'])
+                    .attr('href', data['ogImage']);
                 $('#link-url')
                     .text(data['ogUrl'])
                     .attr('href', data['ogUrl']);
@@ -73,7 +78,7 @@ $(document).ready(function ($) {
     function clearFields() {
         $('#link-title').text('').removeAttr('style');
         $('#link-description').text('').removeAttr('style');
-        $('#link-img').removeAttr('src', '').removeAttr('style');
+        $('#link-img').removeAttr('src', '');
         $('#link-url').text('').removeAttr('style');
     }
 });

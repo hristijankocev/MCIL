@@ -9,26 +9,27 @@ import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
 public class LinkServiceImpl implements LinkService {
+
     private final WebPageRepository webPageRepository;
+    private final ChromeDriver driver;
 
     @Override
-    public Link extractPreview(Long linkId) throws IOException {
+    public Link extractPreview(Long linkId) {
         String url = this.webPageRepository.findById(linkId)
                 .orElseThrow(() -> new WebPageNotFoundException(linkId))
                 .getLink();
 
-        if (!url.startsWith("http")) {
-            url = url.replaceFirst("https", "http");
-        }
-        final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.87 Safari/537.36";
-        Document document = Jsoup.connect(url).userAgent(USER_AGENT).get();
+        driver.get(url);
+
+        Document document = Jsoup.parse(driver.getPageSource());
+
         String title = getMetaTagContent(document, "meta[name=title]", "h1");
         String desc = getMetaTagContent(document, "meta[name=description]", "p");
         String ogUrl = StringUtils.defaultIfBlank(getMetaTagContent(document, "meta[property=og:url]", ""), url);
@@ -50,9 +51,18 @@ public class LinkServiceImpl implements LinkService {
 
     private String getAlternateEl(Document document, String query) {
         if (!query.isEmpty()) {
-            Element otherEl = document.selectFirst(query);
-            if (otherEl != null) {
-                return otherEl.text();
+            if (query.equals("img[src]")) {
+                Elements elements = document.select(query);
+                for (Element el : elements) {
+                    if (el != null) {
+                        if (!el.attr("height").equals("")
+                                && Integer.parseInt(el.attr("height")) >= 180)
+                            return el.attr("src");
+                    }
+                }
+            } else {
+                Element el = document.selectFirst(query);
+                return el != null ? el.text() : "";
             }
         }
         return "";
