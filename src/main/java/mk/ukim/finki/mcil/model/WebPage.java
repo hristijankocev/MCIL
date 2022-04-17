@@ -21,9 +21,10 @@ public class WebPage {
     private Person person;
 
     // Crawled content
+    @Column(columnDefinition = "text")
     private String content;
 
-    // fields: Map<String, String> - For later
+    // fields: Map<String, String> - For later (maybe)
 
     public WebPage() {
     }

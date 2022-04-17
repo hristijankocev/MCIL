@@ -1,6 +1,7 @@
 package mk.ukim.finki.mcil.service.api.impl;
 
 import lombok.RequiredArgsConstructor;
+import mk.ukim.finki.mcil.model.WebPage;
 import mk.ukim.finki.mcil.model.api.Link;
 import mk.ukim.finki.mcil.model.exception.WebPageNotFoundException;
 import mk.ukim.finki.mcil.persistence.jpa.WebPageRepository;
@@ -22,13 +23,16 @@ public class LinkServiceImpl implements LinkService {
 
     @Override
     public Link extractPreview(Long linkId) {
-        String url = this.webPageRepository.findById(linkId)
-                .orElseThrow(() -> new WebPageNotFoundException(linkId))
-                .getLink();
+        WebPage webPage = this.webPageRepository.findById(linkId).orElseThrow(() -> new WebPageNotFoundException(linkId));
+
+        String url = webPage.getLink();
 
         driver.get(url);
 
         Document document = Jsoup.parse(driver.getPageSource());
+
+        webPage.setContent(document.toString());
+        this.webPageRepository.save(webPage);
 
         String title = getMetaTagContent(document, "meta[name=title]", "h1");
         String desc = getMetaTagContent(document, "meta[name=description]", "p");
@@ -55,8 +59,7 @@ public class LinkServiceImpl implements LinkService {
                 Elements elements = document.select(query);
                 for (Element el : elements) {
                     if (el != null) {
-                        if (!el.attr("height").equals("")
-                                && Integer.parseInt(el.attr("height")) >= 180)
+                        if (!el.attr("height").equals("") && Integer.parseInt(el.attr("height")) >= 180)
                             return el.attr("src");
                     }
                 }
