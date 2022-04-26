@@ -15,17 +15,22 @@
                 <li class="nav-item">
                     <a href="/" class="nav-link">Home</a>
                 </li>
-                <li class="nav-item">
-                    <a th:href="@{/person/add}" class="nav-link">Add person</a>
-                </li>
             </ul>
-            <a href="/">
-                <img th:src="@{/images/company_logo.png}" alt="brand-logo" class="nav-brand-logo"
-                     ondragstart="return false;">
-            </a>
             <ul class="navbar-nav mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a href="#" class="nav-link">Log in (soon maybe)</a>
+                    <a href="/">
+                        <img th:src="@{/images/company_logo.png}" alt="brand-logo" class="nav-brand-logo"
+                             ondragstart="return false;">
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav mb-2 mb-lg-0">
+                <li class="nav-item" th:if="${#httpServletRequest.requestURI.contains('/person/edit')}">
+                    <a class="nav-link" href="!#">switch button (soon)</a>
+                </li>
+                <li class="nav-item" th:unless="${#httpServletRequest.requestURI.contains('/person/edit')}">
+                    <a th:href="@{/person/add}" class="nav-link">Add person</a>
                 </li>
             </ul>
         </div>

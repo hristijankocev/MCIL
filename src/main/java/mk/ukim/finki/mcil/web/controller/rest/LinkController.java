@@ -19,9 +19,11 @@ public class LinkController {
     private final LinkService linkService;
 
     @GetMapping(value = "/webpage/preview", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Link> getPreview(@RequestParam Long linkId) {
+    public ResponseEntity<Link> getPreview(@RequestParam Long linkId,
+                                           @RequestParam(required = false) String sessionKey,
+                                           @RequestParam(required = false) String sessionPassword) {
         try {
-            return new ResponseEntity<>(this.linkService.extractPreview(linkId), HttpStatus.OK);
+            return new ResponseEntity<>(this.linkService.extractPreview(linkId, sessionKey, sessionPassword), HttpStatus.OK);
         } catch (WebPageNotFoundException e) {
             throw new ResponseStatusException(404, e.getMessage(), e);
         }

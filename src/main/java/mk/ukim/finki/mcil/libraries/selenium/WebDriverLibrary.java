@@ -5,6 +5,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 import javax.annotation.PostConstruct;
 import java.util.concurrent.TimeUnit;
@@ -20,6 +21,7 @@ public class WebDriverLibrary {
         System.setProperty("webdriver.chrome.whitelistedIps", "");
     }
 
+    @Lazy
     @Bean
     public ChromeDriver getChromeDriver() {
         WebDriverManager.chromedriver().setup();

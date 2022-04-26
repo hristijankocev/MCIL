@@ -1,6 +1,7 @@
 package mk.ukim.finki.mcil.service.api.impl;
 
 import lombok.RequiredArgsConstructor;
+import mk.ukim.finki.mcil.libraries.selenium.WebDriverLibrary;
 import mk.ukim.finki.mcil.model.WebPage;
 import mk.ukim.finki.mcil.model.api.Link;
 import mk.ukim.finki.mcil.model.exception.WebPageNotFoundException;
@@ -11,25 +12,51 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
 
 @Service
 @RequiredArgsConstructor
 public class LinkServiceImpl implements LinkService {
 
     private final WebPageRepository webPageRepository;
-    private final ChromeDriver driver;
+    private ChromeDriver driver;
+
+    @PostConstruct
+    private void initDriver() {
+        this.driver = new WebDriverLibrary().getChromeDriver();
+    }
 
     @Override
-    public Link extractPreview(Long linkId) {
+    public Link extractPreview(Long linkId, String sessionKey, String sessionPassword) {
+        // If in any way something went wrong with the WebDriver, test it and if it's not working, re-init it
+        try {
+            this.driver.getTitle();
+        } catch (Exception e) {
+            this.driver = new WebDriverLibrary().getChromeDriver();
+        }
+
         WebPage webPage = this.webPageRepository.findById(linkId).orElseThrow(() -> new WebPageNotFoundException(linkId));
 
         String url = webPage.getLink();
 
-        driver.get(url);
+        this.driver.get(url);
 
-        Document document = Jsoup.parse(driver.getPageSource());
+        if (sessionKey != null && sessionPassword != null && !sessionKey.isEmpty() && !sessionPassword.isEmpty()) {
+            // Sometimes LinkedIn will let you access the page, so check if the profile was already opened
+            if (this.driver.findElementsByXPath("//*[@id=\"main-content\"]/section[1]/div/section/section[1]/div/div[2]/div[1]/h1").isEmpty()) {
+                // Authenticate the user to LinkedIn
+                authLinkedIn(url, sessionKey, sessionPassword);
+            }
+        }
+
+        Document document = Jsoup.parse(this.driver.getPageSource());
+
+        // Restart the driver to clear the cookies
+        restartWebDriver();
 
         webPage.setContent(document.toString());
         this.webPageRepository.save(webPage);
@@ -69,5 +96,25 @@ public class LinkServiceImpl implements LinkService {
             }
         }
         return "";
+    }
+
+    private void authLinkedIn(String originalUrl, String sessionKey, String sessionPassword) {
+        this.driver.findElementByXPath("//*[@id=\"main-content\"]/div/form/p/button").click();
+
+        WebElement usernameInput = this.driver.findElementByXPath("//*[@id=\"session_key\"]");
+        WebElement passwordInput = this.driver.findElementByXPath("//*[@id=\"session_password\"]");
+
+        usernameInput.sendKeys(sessionKey);
+        passwordInput.sendKeys(sessionPassword);
+
+        this.driver.findElementByXPath("//*[@id=\"main-content\"]/div/div/div/form/button").click();
+
+        this.driver.get(originalUrl);
+    }
+
+    private void restartWebDriver() {
+        this.driver.manage().deleteAllCookies();
+        this.driver.quit();
+        this.driver = new WebDriverLibrary().getChromeDriver();
     }
 }

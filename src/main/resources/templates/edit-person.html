@@ -13,7 +13,7 @@
     <script th:src="@{/js/link-preview.js}"></script>
 </head>
 <body>
-<section id="section-header" class="no-select pb-5">
+<section id="section-header" class="no-select pb-4">
     <div th:replace="fragments/header :: header"></div>
 </section>
 
@@ -161,11 +161,11 @@
                                                         th:attr="aria-labelledby='validlink-dropdown-menu-button-' + ${iterStat.index}"
                                                         style="min-width: auto !important;">
                                                         <li>
-                                                            <button class="preview-link dropdown-item text-center"
-                                                                    title="preview link"
-                                                                    th:attr="linkId=${validLink.getId()}">
+                                                            <p class="preview-link dropdown-item text-center m-0"
+                                                               title="preview link"
+                                                               th:attr="linkString=${validLink.getLink()}, linkId=${validLink.getId()}">
                                                                 <i class="fa-regular fa-eye w-100 text-success"></i>
-                                                            </button>
+                                                            </p>
                                                         </li>
 
                                                         <li class="pt-2">
@@ -216,11 +216,11 @@
                                                         th:attr="aria-labelledby='crawledlink-dropdown-menu-button-' + ${iterStat.index}"
                                                         style="min-width: auto !important;">
                                                         <li>
-                                                            <button class="preview-link dropdown-item text-center"
-                                                                    title="preview link"
-                                                                    th:attr="linkId=${crawledLink.getId()}">
+                                                            <p class="preview-link dropdown-item text-center m-0"
+                                                               title="preview link"
+                                                               th:attr="linkId=${crawledLink.getId()}, linkString=${crawledLink.getLink()}">
                                                                 <i class="fa-regular fa-eye w-100 text-success"></i>
-                                                            </button>
+                                                            </p>
                                                         </li>
                                                         <li class="pt-2">
                                                             <button class="dropdown-item text-center"
@@ -252,6 +252,59 @@
                                 </div>
                                 <div th:replace="fragments/link-preview :: link-preview-frag"></div>
 
+                                <!-- Button trigger modal -->
+                                <button type="button" class="d-none" data-bs-toggle="modal" data-bs-target="#authModal"
+                                        id="auth-modal-btn">
+                                </button>
+
+                                <!-- LinkedIn Auth Modal -->
+                                <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content" style="background-color: rgba(73, 73, 73, 0.9);">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="authModalLabel">
+                                                    LinkedIn Authentication</h5>
+                                                <div data-bs-toggle="tooltip"
+                                                     data-bs-container="#authModal"
+                                                     data-bs-original-title="In order to retrieve info from LinkedIn,
+                                                     it requires a user to be authenticated first. Our server will
+                                                     never store your credentials, only pass them to the LinkedIn service.">
+                                                    <i class="fa-solid fa-circle-info"></i>
+                                                </div>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>Looks like you are trying to access LinkedIn.</p>
+                                                <p>In order to retrieve useful info, please provide your credentials to
+                                                    LinkedIn.</p>
+                                                <p>If you have Two-Step verification enabled, this will not work.</p>
+                                                <div class="container">
+                                                    <div class="row">
+                                                        <input type="text" class="form-control" name="sessionKey"
+                                                               placeholder="Email" required form="authForm">
+                                                    </div>
+                                                    <div class="row py-2">
+                                                        <input type="password" class="form-control" required
+                                                               name="sessionPassword" placeholder="Password"
+                                                               form="authForm">
+                                                    </div>
+                                                    <input type="hidden" id="auth-url-helper">
+                                                    <input type="hidden" id="auth-url-id-helper">
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+                                                        id="auth-no-credentials">
+                                                    Proceed without credentials
+                                                </button>
+                                                <button type="button" class="btn btn-success" data-bs-dismiss="modal"
+                                                        id="auth-use-credentials">
+                                                    Use credentials
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </form>
 
                             <!-- Delete forms -->
