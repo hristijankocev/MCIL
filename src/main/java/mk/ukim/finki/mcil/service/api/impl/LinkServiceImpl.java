@@ -13,21 +13,27 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class LinkServiceImpl implements LinkService {
 
     private final WebPageRepository webPageRepository;
-    private ChromeDriver driver;
+    private RemoteWebDriver driver;
+
+    @Autowired
+    private Environment env;
 
     @PostConstruct
     private void initDriver() {
-        this.driver = new WebDriverLibrary().getChromeDriver();
+        this.driver = getWebDriver();
     }
 
     @Override
@@ -36,7 +42,7 @@ public class LinkServiceImpl implements LinkService {
         try {
             this.driver.getTitle();
         } catch (Exception e) {
-            this.driver = new WebDriverLibrary().getChromeDriver();
+            this.driver = getWebDriver();
         }
 
         WebPage webPage = this.webPageRepository.findById(linkId).orElseThrow(() -> new WebPageNotFoundException(linkId));
@@ -115,6 +121,24 @@ public class LinkServiceImpl implements LinkService {
     private void restartWebDriver() {
         this.driver.manage().deleteAllCookies();
         this.driver.quit();
-        this.driver = new WebDriverLibrary().getChromeDriver();
+        this.driver = getWebDriver();
+    }
+
+    private RemoteWebDriver getWebDriver() {
+        String activeEnv = env.getProperty("spring.profiles.active");
+        switch (Objects.requireNonNull(activeEnv)) {
+            case "prod": {
+                System.out.println("prod env");
+                return new WebDriverLibrary().getLocalChromeDriver();
+            }
+            case "docker-prod": {
+                System.out.println("docker prod env");
+                return new WebDriverLibrary().getRemoteChromeDriver();
+            }
+            default: {
+                System.out.println("Unknown profile");
+                return new WebDriverLibrary().getLocalChromeDriver();
+            }
+        }
     }
 }
