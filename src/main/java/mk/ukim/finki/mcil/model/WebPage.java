@@ -12,6 +12,7 @@ public class WebPage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(columnDefinition = "text")
     private String link;
 
     @Enumerated(EnumType.STRING)
